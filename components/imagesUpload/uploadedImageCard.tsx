@@ -1,4 +1,11 @@
-import { View, Image, TouchableOpacity, StyleSheet, Text } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  Dimensions,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 interface UploadedImageCardProps {
@@ -6,10 +13,17 @@ interface UploadedImageCardProps {
   onDelete: () => void;
 }
 
+const { width: screenWidth } = Dimensions.get("window");
+const imageWidth = (screenWidth - 60) / 2;
+
 const UploadedImageCard = ({ imageUri, onDelete }: UploadedImageCardProps) => {
   return (
     <View style={styles.container}>
-      <Image source={{ uri: imageUri }} style={styles.image} />
+      <Image
+        source={{ uri: imageUri }}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
         <Ionicons name="trash-outline" size={20} color="#fff" />
         <Text style={styles.deleteText}>Delete Image</Text>
@@ -20,27 +34,31 @@ const UploadedImageCard = ({ imageUri, onDelete }: UploadedImageCardProps) => {
 
 const styles = StyleSheet.create({
   container: {
+    width: imageWidth,
+    aspectRatio: 1,
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "#1a1a2e",
-    width: 250,
   },
   image: {
     width: "100%",
-    height: 250,
-    borderRadius: 12,
+    height: "100%",
   },
   deleteButton: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    padding: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#4B3F72",
-    padding: 12,
-    gap: 8,
   },
   deleteText: {
     color: "#fff",
-    fontSize: 16,
+    marginLeft: 8,
+    fontSize: 12,
   },
 });
 
