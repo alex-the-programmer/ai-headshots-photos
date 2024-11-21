@@ -31,7 +31,7 @@ export default function RootLayout() {
         if (!hasSeenWelcome) {
           router.replace("/welcome");
         } else {
-          router.replace("/(tabs)");
+          router.replace("/payment");
         }
         SplashScreen.hideAsync();
       }
@@ -48,6 +48,8 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="welcome" options={{ headerShown: false }} />
+        <Stack.Screen name="payment" options={{ headerShown: false }} />
+        <Stack.Screen name="imagesUpload" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
