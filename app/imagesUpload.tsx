@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import UploadImageButton from "@/components/imagesUpload/uploadImageButton";
 import UploadedImages from "@/components/imagesUpload/uploadedImages";
 import PrimaryButton from "@/components/common/primaryButton";
-
+import { useRouter } from "expo-router";
 const ImagesUpload = () => {
   const images = [
     { id: "1", uri: "https://picsum.photos/200/300" },
@@ -14,6 +14,8 @@ const ImagesUpload = () => {
     { id: "7", uri: "https://picsum.photos/200/300" },
     { id: "8", uri: "https://picsum.photos/200/300" },
   ];
+
+  const router = useRouter();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -29,7 +31,12 @@ const ImagesUpload = () => {
         <UploadImageButton freeTriesCount={3} />
         <UploadedImages images={images} />
         <View style={styles.buttonContainer}>
-          <PrimaryButton text="Next" onPress={() => {}} />
+          <PrimaryButton
+            text="Next"
+            onPress={() => {
+              router.push("/dashboard");
+            }}
+          />
         </View>
       </View>
     </SafeAreaView>
