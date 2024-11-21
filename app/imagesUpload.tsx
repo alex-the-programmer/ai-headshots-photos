@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import UploadImageButton from "@/components/imagesUpload/uploadImageButton";
+import UploadedImageCard from "@/components/imagesUpload/uploadedImageCard";
 
 const ImagesUpload = () => {
   return (
@@ -13,6 +14,10 @@ const ImagesUpload = () => {
       </View>
 
       <UploadImageButton freeTriesCount={3} />
+      <UploadedImageCard
+        imageUri="https://picsum.photos/200/300"
+        onDelete={() => {}}
+      />
     </View>
   );
 };
