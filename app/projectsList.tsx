@@ -19,8 +19,8 @@ const projectsSample: Project[] = [
     createdAt: "2021-01-01",
     status: "pending",
     thumbnails: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
+      "https://picsum.photos/150/150",
+      "https://picsum.photos/150/150",
     ],
   },
   {
@@ -28,8 +28,8 @@ const projectsSample: Project[] = [
     createdAt: "2021-01-02",
     status: "pending",
     thumbnails: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
+      "https://picsum.photos/150/150",
+      "https://picsum.photos/150/150",
     ],
   },
   {
@@ -37,8 +37,35 @@ const projectsSample: Project[] = [
     createdAt: "2021-01-03",
     status: "pending",
     thumbnails: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
+      "https://picsum.photos/150/150",
+      "https://picsum.photos/150/150",
+    ],
+  },
+  {
+    id: "4",
+    createdAt: "2021-01-04",
+    status: "pending",
+    thumbnails: [
+      "https://picsum.photos/150/150",
+      "https://picsum.photos/150/150",
+    ],
+  },
+  {
+    id: "5",
+    createdAt: "2021-01-05",
+    status: "pending",
+    thumbnails: [
+      "https://picsum.photos/150/150",
+      "https://picsum.photos/150/150",
+    ],
+  },
+  {
+    id: "6",
+    createdAt: "2021-01-06",
+    status: "pending",
+    thumbnails: [
+      "https://picsum.photos/150/150",
+      "https://picsum.photos/150/150",
     ],
   },
 ];
@@ -61,16 +88,7 @@ const ProjectCard = ({
   const handlePress = () => {
     console.log("navigation before navigating ", navigation);
     navigation.navigate("Styles", {
-      styles: [
-        {
-          id: project.id,
-          name: "Sample Style",
-          outfit: "Sample Outfit",
-          outfitColor: "Sample Outfit Color",
-          images: [],
-          thumbnails: [],
-        },
-      ],
+      projectId: "1",
     });
   };
 

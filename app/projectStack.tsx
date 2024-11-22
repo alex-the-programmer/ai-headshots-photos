@@ -41,12 +41,15 @@ const ProjectStack = () => {
       <Stack.Screen
         name="Projects"
         component={ProjectsList}
-        options={{ title: "Projects" }}
+        options={{
+          title: "My Projects",
+          headerLeft: () => null, // This will hide the back button
+        }}
       />
       <Stack.Screen
         name="Styles"
         component={DashboardStyles}
-        options={{ title: "My Styles" }}
+        options={{ title: "Project Styles" }}
       />
       <Stack.Screen
         name="StyleImages"
