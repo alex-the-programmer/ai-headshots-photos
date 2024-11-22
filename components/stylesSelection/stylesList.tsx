@@ -1,6 +1,8 @@
 import { Style } from "@/app/projectStack";
 import IntoCard from "@/components/common/intoCard";
 import { FlatList, Text, StyleSheet } from "react-native";
+import StylesSelectionModal from "./stylesSelectionModal";
+import { useState } from "react";
 
 const stylesList = [
   {
@@ -46,15 +48,33 @@ const stylesList = [
 ];
 
 const StylesList = () => {
+  const [selectedStyle, setSelectedStyle] = useState<Style | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleStylePress = (style: Style) => {
+    setSelectedStyle(style);
+    setModalVisible(true);
+  };
+
   return (
-    <FlatList
-      data={stylesList}
-      renderItem={({ item }) => (
-        <IntoCard onPress={() => {}} thumbnails={item.logos}>
-          <Text style={styles.whiteText}>{item.name}</Text>
-        </IntoCard>
-      )}
-    />
+    <>
+      <FlatList
+        data={stylesList}
+        renderItem={({ item }) => (
+          <IntoCard
+            onPress={() => handleStylePress(item)}
+            thumbnails={item.logos}
+          >
+            <Text style={styles.whiteText}>{item.name}</Text>
+          </IntoCard>
+        )}
+      />
+      <StylesSelectionModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        style={selectedStyle}
+      />
+    </>
   );
 };
 
