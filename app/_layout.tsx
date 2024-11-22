@@ -24,26 +24,20 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  // useEffect(() => {
-  //   async function checkWelcomeStatus() {
-  //     if (loaded) {
-  //       const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
-  //       if (!hasSeenWelcome) {
-  //         router.replace("/welcome");
-  //       } else {
-  //         router.replace("/payment");
-  //       }
-  //       SplashScreen.hideAsync();
-  //     }
-  //   }
-
-  //   checkWelcomeStatus();
-  // }, [loaded, router]);
-
   useEffect(() => {
-    if (loaded) {
-      router.push("/welcome");
+    async function checkWelcomeStatus() {
+      if (loaded) {
+        // const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
+        // if (!hasSeenWelcome) {
+        router.replace("/welcome");
+        // } else {
+        // router.replace("/payment");
+        // }
+        SplashScreen.hideAsync();
+      }
     }
+
+    checkWelcomeStatus();
   }, [loaded, router]);
 
   if (!loaded) {
@@ -56,7 +50,7 @@ export default function RootLayout() {
         <Stack.Screen name="welcome" />
         <Stack.Screen name="payment" />
         <Stack.Screen name="imagesUpload" />
-        <Stack.Screen name="dashboard" />
+        <Stack.Screen name="projectStack" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
       </Stack>

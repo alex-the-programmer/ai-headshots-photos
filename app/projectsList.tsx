@@ -1,10 +1,15 @@
 import IntoCard from "@/components/common/intoCard";
-import { useRouter } from "expo-router";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, SafeAreaView } from "react-native";
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from "@react-navigation/native-stack";
+import { RootStackParamList } from "./projectStack";
 
 type Project = {
   id: string;
   createdAt: string;
+  status: string;
   thumbnails: string[];
 };
 
@@ -12,6 +17,7 @@ const projectsSample: Project[] = [
   {
     id: "1",
     createdAt: "2021-01-01",
+    status: "pending",
     thumbnails: [
       "https://via.placeholder.com/150",
       "https://via.placeholder.com/150",
@@ -20,6 +26,7 @@ const projectsSample: Project[] = [
   {
     id: "2",
     createdAt: "2021-01-02",
+    status: "pending",
     thumbnails: [
       "https://via.placeholder.com/150",
       "https://via.placeholder.com/150",
@@ -28,6 +35,7 @@ const projectsSample: Project[] = [
   {
     id: "3",
     createdAt: "2021-01-03",
+    status: "pending",
     thumbnails: [
       "https://via.placeholder.com/150",
       "https://via.placeholder.com/150",
@@ -35,35 +43,73 @@ const projectsSample: Project[] = [
   },
 ];
 
-const ProjectCard = ({ project }: { project: Project }) => {
-  const router = useRouter();
+type ProjectsNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+// Define the props for the ProjectsListScreen using NativeStackScreenProps
+type ProjectsListScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Projects"
+>;
+
+const ProjectCard = ({
+  project,
+  navigation,
+}: {
+  project: Project;
+  navigation: ProjectsNavigationProp;
+}) => {
+  const handlePress = () => {
+    console.log("navigation before navigating ", navigation);
+    navigation.navigate("Styles", {
+      styles: [
+        {
+          id: project.id,
+          name: "Sample Style",
+          outfit: "Sample Outfit",
+          outfitColor: "Sample Outfit Color",
+          images: [],
+          thumbnails: [],
+        },
+      ],
+    });
+  };
+
   return (
-    <IntoCard
-      onPress={() => {
-        router.push("/dashboard");
-      }}
-      thumbnails={project.thumbnails}
-    >
+    <IntoCard onPress={handlePress} thumbnails={project.thumbnails}>
       <Text style={styles.whiteText}>{project.createdAt}</Text>
+      <Text style={styles.whiteText}>{project.status}</Text>
     </IntoCard>
   );
 };
 
-const ProjectsList = (
-  { projects }: { projects: Project[] } = { projects: projectsSample }
-) => {
+const ProjectsList = ({
+  projects,
+  navigation,
+}: {
+  projects: Project[];
+  navigation: ProjectsNavigationProp;
+}) => {
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={projects}
-        renderItem={({ item }) => <ProjectCard project={item} />}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <FlatList
+          data={projects}
+          renderItem={({ item }) => (
+            <ProjectCard project={item} navigation={navigation} />
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
-export default ProjectsList;
+export default function ProjectsListScreen({
+  navigation,
+}: ProjectsListScreenProps) {
+  console.log("navigation", navigation);
+  return <ProjectsList projects={projectsSample} navigation={navigation} />;
+}
 
 const styles = StyleSheet.create({
   whiteText: {
