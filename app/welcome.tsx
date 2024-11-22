@@ -5,8 +5,9 @@ import { useRouter } from "expo-router";
 export default function WelcomeScreen() {
   const router = useRouter();
   const handlePress = () => {
-    AsyncStorage.setItem("hasSeenWelcome", "true");
-    router.replace("/(tabs)");
+    // AsyncStorage.setItem("hasSeenWelcome", "true");
+    // router.replace("/(tabs)");
+    router.push("/payment");
   };
 
   return (
