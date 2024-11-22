@@ -34,7 +34,7 @@ const ImagesUpload = () => {
           <PrimaryButton
             text="Next"
             onPress={() => {
-              router.push("/projectStack");
+              router.push("/stylesSelection");
             }}
           />
         </View>
