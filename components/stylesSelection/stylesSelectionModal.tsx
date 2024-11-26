@@ -138,7 +138,10 @@ const StylesSelectionModal = ({
           <Text style={styles.labelText}>Outfit Color</Text>
           <View style={styles.pickerContainer}>{renderColorPicker}</View>
 
-          <PrimaryButton text="Close" onPress={onClose} />
+          <View style={styles.buttonContainer}>
+            <PrimaryButton text="Back" onPress={onClose} />
+            <PrimaryButton text="Add" onPress={onClose} />
+          </View>
         </View>
       </View>
     </Modal>
@@ -230,6 +233,11 @@ const styles = StyleSheet.create({
   iosPicker: {
     width: "100%",
     height: 215,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 10,
   },
 });
 
