@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#1a1a1a",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+    color: "white",
   },
   pickerContainer: {
     width: "100%",
@@ -201,6 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     alignSelf: "flex-start",
+    color: "white",
   },
   iosPickerButton: {
     width: "100%",
