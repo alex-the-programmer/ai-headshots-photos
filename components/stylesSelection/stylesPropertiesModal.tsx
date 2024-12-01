@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#1a1a1a",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "white",
   },
   previewImage: {
     width: 150,
@@ -111,10 +112,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     marginBottom: 5,
+    color: "white",
   },
   value: {
     fontSize: 16,
-    color: "#666",
+    color: "#999",
   },
   buttonContainer: {
     flexDirection: "row",
