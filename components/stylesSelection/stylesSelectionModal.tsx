@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
+    width: "90%",
     margin: 20,
     backgroundColor: "#1a1a1a",
     borderRadius: 20,
@@ -189,9 +190,6 @@ const styles = StyleSheet.create({
   pickerContainer: {
     width: "100%",
     marginBottom: 15,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
   },
   picker: {
     minWidth: 200,
@@ -207,12 +205,15 @@ const styles = StyleSheet.create({
   iosPickerButton: {
     width: "100%",
     padding: 12,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#2a2a2a",
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#333",
   },
   iosPickerButtonText: {
     fontSize: 16,
-    color: "#000",
+    color: "white",
+    textAlign: "center",
   },
   iosPickerModal: {
     position: "absolute",
