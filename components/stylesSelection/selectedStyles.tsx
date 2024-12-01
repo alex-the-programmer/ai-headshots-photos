@@ -1,11 +1,22 @@
 import React from "react";
-import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  Pressable,
+} from "react-native";
+import StylesPropertiesModal from "./stylesPropertiesModal";
+import { useState } from "react";
 
 interface SelectedStylesProps {
   selectedStyles: Array<{
     id: string;
     name: string;
     imageUrl: string;
+    outfit?: string;
+    outfitColor?: string;
   }>;
 }
 
@@ -27,19 +38,43 @@ const selectedStyles = [
 ];
 
 const SelectedStyles = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<
+    (typeof selectedStyles)[0] | null
+  >(null);
+
+  const handleStylePress = (style: (typeof selectedStyles)[0]) => {
+    setSelectedStyle(style);
+    setModalVisible(true);
+  };
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.scrollContainer}
-    >
-      {selectedStyles.map((style) => (
-        <View key={style.id} style={styles.styleItem}>
-          <Image source={{ uri: style.imageUrl }} style={styles.avatar} />
-          <Text style={styles.label}>{style.name}</Text>
-        </View>
-      ))}
-    </ScrollView>
+    <>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}
+      >
+        {selectedStyles.map((style) => (
+          <Pressable
+            key={style.id}
+            style={styles.styleItem}
+            onPress={() => handleStylePress(style)}
+          >
+            <Image source={{ uri: style.imageUrl }} style={styles.avatar} />
+            <Text style={styles.label}>{style.name}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+      <StylesPropertiesModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        style={selectedStyle}
+        onDelete={(styleId) => {
+          // Handle delete logic here
+          setModalVisible(false);
+        }}
+      />
+    </>
   );
 };
 
