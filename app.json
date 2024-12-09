@@ -17,7 +17,7 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "your.package.name"
+      "package": "com.yourcompany.aiheadshots"
     },
     "web": {
       "bundler": "metro",
