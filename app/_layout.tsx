@@ -11,8 +11,10 @@ import { useEffect, useState } from "react";
 import "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import "dotenv/config";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -44,17 +46,25 @@ export default function RootLayout() {
     return null;
   }
 
+  // Initialize Apollo Client
+  const client = new ApolloClient({
+    uri: process.env.GRAPHQL_API_URL || "http://localhost:4000/graphql",
+    cache: new InMemoryCache(),
+  });
+
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="welcome" />
-        <Stack.Screen name="payment" />
-        <Stack.Screen name="imagesUpload" />
-        <Stack.Screen name="projectStack" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <ApolloProvider client={client}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="welcome" />
+          <Stack.Screen name="payment" />
+          <Stack.Screen name="imagesUpload" />
+          <Stack.Screen name="projectStack" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </ApolloProvider>
   );
 }
