@@ -1,12 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+} from "react-native";
 import { useRouter } from "expo-router";
 import * as AppleAuthentication from "expo-apple-authentication";
 
 export default function WelcomeScreen() {
   const router = useRouter();
 
-  const handlePress = async () => {
+  const handlePressIos = async () => {
     try {
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL],
@@ -20,6 +26,18 @@ export default function WelcomeScreen() {
       } else {
         console.error("Apple Sign in error:", e);
       }
+    }
+  };
+
+  const handlePressAndroid = async () => {
+    console.log("Android Sign in");
+  };
+
+  const handlePress = async () => {
+    if (Platform.OS === "ios") {
+      handlePressIos();
+    } else {
+      handlePressAndroid();
     }
   };
 
