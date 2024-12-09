@@ -8,9 +8,22 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as AppleAuthentication from "expo-apple-authentication";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+
+// Initialize WebBrowser for OAuth
+WebBrowser.maybeCompleteAuthSession();
 
 export default function WelcomeScreen() {
   const router = useRouter();
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      "123456789-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com",
+    // Optional: Add these if you want web/iOS support
+    // iosClientId: "YOUR_IOS_CLIENT_ID",
+    // webClientId: "YOUR_WEB_CLIENT_ID",
+  });
 
   const handlePressIos = async () => {
     try {
@@ -30,7 +43,43 @@ export default function WelcomeScreen() {
   };
 
   const handlePressAndroid = async () => {
-    console.log("Android Sign in");
+    try {
+      const result = await promptAsync();
+
+      if (result?.type === "success" && result.authentication) {
+        // Get user info using the access token
+        const userInfoResponse = await fetch(
+          "https://www.googleapis.com/userinfo/v2/me",
+          {
+            headers: {
+              Authorization: `Bearer ${result.authentication.accessToken}`,
+            },
+          }
+        );
+
+        const userInfo = await userInfoResponse.json();
+        console.log("Google user info:", userInfo);
+
+        // Store user info in AsyncStorage
+        await AsyncStorage.setItem(
+          "session",
+          JSON.stringify({
+            id: userInfo.id,
+            email: userInfo.email,
+            name: userInfo.name,
+            picture: userInfo.picture,
+            accessToken: result.authentication.accessToken,
+          })
+        );
+
+        console.log("User info:", userInfo);
+        router.push("/payment");
+      } else {
+        console.log("Google Sign in cancelled or failed");
+      }
+    } catch (e) {
+      console.error("Google Sign in error:", e);
+    }
   };
 
   const handlePress = async () => {
