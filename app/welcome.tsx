@@ -1,13 +1,26 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import * as AppleAuthentication from "expo-apple-authentication";
 
 export default function WelcomeScreen() {
   const router = useRouter();
-  const handlePress = () => {
-    // AsyncStorage.setItem("hasSeenWelcome", "true");
-    // router.replace("/(tabs)");
-    router.push("/payment");
+
+  const handlePress = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL],
+      });
+      await AsyncStorage.setItem("session", credential.user);
+      console.log("User token:", credential);
+      router.push("/payment");
+    } catch (e: any) {
+      if (e.code === "ERR_CANCELED") {
+        console.log("User canceled Apple Sign in");
+      } else {
+        console.error("Apple Sign in error:", e);
+      }
+    }
   };
 
   return (

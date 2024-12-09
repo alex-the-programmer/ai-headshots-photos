@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import "dotenv/config";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
@@ -48,7 +47,7 @@ export default function RootLayout() {
 
   // Initialize Apollo Client
   const client = new ApolloClient({
-    uri: process.env.GRAPHQL_API_URL || "http://localhost:4000/graphql",
+    uri: "http://localhost:3000/graphql",
     cache: new InMemoryCache(),
   });
 
