@@ -5,6 +5,7 @@ import SignInButton from "@/components/welcome/signInButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React from "react";
+import Loading from "@/components/common/loading";
 
 // Initialize WebBrowser for OAuth
 WebBrowser.maybeCompleteAuthSession();
@@ -32,11 +33,7 @@ export default function WelcomeScreen() {
   }, [hasSession, router]);
 
   if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#fff" />
-      </View>
-    );
+    return <Loading />;
   }
 
   return (
@@ -83,12 +80,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#rgba(255, 255, 255, 0.8)",
     lineHeight: 24,
-  },
-  loadingContainer: {
-    flex: 1,
-    backgroundColor: "#000",
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
 

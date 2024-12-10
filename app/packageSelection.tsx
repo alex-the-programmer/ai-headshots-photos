@@ -3,9 +3,22 @@ import PackageCard from "@/components/packageSelection/packageCard";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { gql, useQuery } from "@apollo/client";
+import { usePackageSelectionPageQuery } from "@/generated/graphql";
+import Loading from "@/components/common/loading";
 
 const PackageSelectionScreen = () => {
   const router = useRouter();
+  const {
+    data: packageList,
+    loading: packageListLoading,
+    error: packageListError,
+  } = usePackageSelectionPageQuery();
+
+  if (packageListLoading) {
+    return <Loading />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -19,9 +32,9 @@ const PackageSelectionScreen = () => {
             style={styles.heroImage}
           />
           <View style={styles.premiumBadge}>
-            <Text style={styles.premiumText}>Premium ⚡️</Text>
-          </View>
-          <Text style={styles.heroTitle}>Get the PRO version</Text>
+            <Text style={styles.premiumText}>Premium Quality</Text>
+          </View>{" "}
+          <Text style={styles.heroTitle}>Choose a package</Text>
         </View>
 
         {/* Features Section */}
@@ -133,3 +146,20 @@ const styles = StyleSheet.create({
 });
 
 export default PackageSelectionScreen;
+
+const PACKAGE_SELECTION_PAGE_QUERY = gql`
+  query PackageSelectionPage {
+    availablePackages {
+      nodes {
+        id
+        name
+        price
+        headshotsCount
+        stylesCount
+        badge
+        badgeColor
+        preselected
+      }
+    }
+  }
+`;

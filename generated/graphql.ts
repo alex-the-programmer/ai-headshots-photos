@@ -784,6 +784,11 @@ export type VerifyStripeSessionPayload = {
   order: Order;
 };
 
+export type PackageSelectionPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PackageSelectionPageQuery = { __typename?: 'Query', availablePackages: { __typename?: 'PackageConnection', nodes: Array<{ __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean }> } };
+
 export type WelcomeScreenSignInWithExternalAccountMutationVariables = Exact<{
   input: SignInWithExternalAccountInput;
 }>;
@@ -792,6 +797,54 @@ export type WelcomeScreenSignInWithExternalAccountMutationVariables = Exact<{
 export type WelcomeScreenSignInWithExternalAccountMutation = { __typename?: 'Mutation', signInWithExternalAccount?: { __typename?: 'SignInWithExternalAccountPayload', clientMutationId?: string | null, userAuthentication?: { __typename?: 'UserAuthentication', jwtToken: string } | null } | null };
 
 
+export const PackageSelectionPageDocument = gql`
+    query PackageSelectionPage {
+  availablePackages {
+    nodes {
+      id
+      name
+      price
+      headshotsCount
+      stylesCount
+      badge
+      badgeColor
+      preselected
+    }
+  }
+}
+    `;
+
+/**
+ * __usePackageSelectionPageQuery__
+ *
+ * To run a query within a React component, call `usePackageSelectionPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePackageSelectionPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePackageSelectionPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePackageSelectionPageQuery(baseOptions?: Apollo.QueryHookOptions<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>(PackageSelectionPageDocument, options);
+      }
+export function usePackageSelectionPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>(PackageSelectionPageDocument, options);
+        }
+export function usePackageSelectionPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>(PackageSelectionPageDocument, options);
+        }
+export type PackageSelectionPageQueryHookResult = ReturnType<typeof usePackageSelectionPageQuery>;
+export type PackageSelectionPageLazyQueryHookResult = ReturnType<typeof usePackageSelectionPageLazyQuery>;
+export type PackageSelectionPageSuspenseQueryHookResult = ReturnType<typeof usePackageSelectionPageSuspenseQuery>;
+export type PackageSelectionPageQueryResult = Apollo.QueryResult<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>;
 export const WelcomeScreenSignInWithExternalAccountDocument = gql`
     mutation WelcomeScreenSignInWithExternalAccount($input: SignInWithExternalAccountInput!) {
   signInWithExternalAccount(input: $input) {
