@@ -1,6 +1,6 @@
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 
-const PaymentCard = ({
+const PackageCard = ({
   planType,
   saveText,
   price,
@@ -23,7 +23,7 @@ const PaymentCard = ({
   );
 };
 
-export default PaymentCard;
+export default PackageCard;
 
 const styles = StyleSheet.create({
   planCard: {

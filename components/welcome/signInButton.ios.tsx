@@ -34,7 +34,7 @@ const SignInButton = () => {
           accountId: credential.user,
         })
       );
-      router.push("/payment");
+      router.push("/packageSelection");
     } catch (e: any) {
       if (e.code === "ERR_CANCELED") {
         console.log("User canceled Apple Sign in");

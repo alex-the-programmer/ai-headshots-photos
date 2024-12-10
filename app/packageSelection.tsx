@@ -1,10 +1,10 @@
 import PrimaryButton from "@/components/common/primaryButton";
-import PaymentCard from "@/components/payment/paymentCard";
+import PackageCard from "@/components/packageSelection/packageCard";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 
-const PaymentScreen = () => {
+const PackageSelectionScreen = () => {
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
@@ -15,7 +15,7 @@ const PaymentScreen = () => {
             <Text style={styles.closeButtonText}>×</Text>
           </TouchableOpacity>
           <Image
-            source={require("../assets/images/payment/hero.png")}
+            source={require("../assets/images/packageSelection/hero.png")}
             style={styles.heroImage}
           />
           <View style={styles.premiumBadge}>
@@ -40,13 +40,13 @@ const PaymentScreen = () => {
         {/* Plans Section */}
         <Text style={styles.planTitle}>Select a plan</Text>
         <View style={styles.plansContainer}>
-          <PaymentCard
+          <PackageCard
             planType="Weekly"
             saveText="save 30%"
             price="$9.99/week"
           />
 
-          <PaymentCard
+          <PackageCard
             planType="Monthly"
             saveText="save 80%"
             price="$19.99/month"
@@ -132,4 +132,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaymentScreen;
+export default PackageSelectionScreen;
