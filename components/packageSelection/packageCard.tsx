@@ -6,25 +6,25 @@ const PackageCard = ({ packageNode }: { packageNode: PackageCardFragment }) => {
   return (
     <TouchableOpacity
       style={[
-        styles.planCard,
+        styles.packageCard,
         packageNode.preselected ? styles.preselectedPlan : {},
       ]}
     >
-      <View style={styles.planHeader}>
-        <Text style={styles.planType}>{packageNode.name}</Text>
+      <View style={styles.packageHeader}>
+        <Text style={styles.packageName}>{packageNode.name}</Text>
         {packageNode.badge ? (
           <View
             style={[
-              styles.saveBadge,
+              styles.badge,
               // @ts-expect-errors
               { backgroundColor: packageNode.badgeColor.toLowerCase() },
             ]}
           >
-            <Text style={styles.saveText}>{packageNode.badge}</Text>
+            <Text style={styles.badgeText}>{packageNode.badge}</Text>
           </View>
         ) : null}
       </View>
-      <Text style={styles.trialText}>
+      <Text style={styles.description}>
         {packageNode.headshotsCount} headshots with {packageNode.stylesCount}{" "}
         styles
       </Text>
@@ -36,30 +36,30 @@ const PackageCard = ({ packageNode }: { packageNode: PackageCardFragment }) => {
 export default PackageCard;
 
 const styles = StyleSheet.create({
-  planCard: {
+  packageCard: {
     backgroundColor: "#2a2a40",
     padding: 15,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "white",
   },
-  planType: {
+  packageName: {
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
   },
-  saveBadge: {
+  badge: {
     backgroundColor: "#7c3aed",
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 15,
   },
-  trialText: {
+  description: {
     color: "#888",
     fontSize: 14,
     marginTop: 5,
   },
-  saveText: {
+  badgeText: {
     color: "white",
     fontSize: 12,
   },
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 5,
   },
-  planHeader: {
+  packageHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
