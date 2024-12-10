@@ -1,6 +1,13 @@
 import PrimaryButton from "@/components/common/primaryButton";
 import PackageCard from "@/components/packageSelection/packageCard";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { gql, useQuery } from "@apollo/client";
@@ -24,9 +31,6 @@ const PackageSelectionScreen = () => {
       <View>
         {/* Hero Section */}
         <View style={styles.heroSection}>
-          <TouchableOpacity style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>×</Text>
-          </TouchableOpacity>
           <Image
             source={require("../assets/images/packageSelection/hero.png")}
             style={styles.heroImage}
@@ -52,19 +56,15 @@ const PackageSelectionScreen = () => {
 
         {/* Plans Section */}
         <Text style={styles.planTitle}>Select a plan</Text>
-        <View style={styles.plansContainer}>
-          <PackageCard
-            planType="Weekly"
-            saveText="save 30%"
-            price="$9.99/week"
-          />
-
-          <PackageCard
-            planType="Monthly"
-            saveText="save 80%"
-            price="$19.99/month"
-          />
-        </View>
+        <FlatList
+          data={packageList?.availablePackages?.nodes}
+          renderItem={({ item }) => (
+            <PackageCard key={item.id} packageNode={item} />
+          )}
+          keyExtractor={(item) => item.id}
+          style={styles.plansContainer}
+          contentContainerStyle={{ gap: 15 }}
+        />
 
         {/* Subscribe Button */}
         <PrimaryButton
@@ -88,16 +88,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  closeButton: {
-    position: "absolute",
-    right: 10,
-    top: 10,
-    zIndex: 1,
-  },
-  closeButtonText: {
-    color: "white",
-    fontSize: 24,
-  },
+
   heroImage: {
     width: "100%",
     height: 200,
@@ -151,14 +142,7 @@ const PACKAGE_SELECTION_PAGE_QUERY = gql`
   query PackageSelectionPage {
     availablePackages {
       nodes {
-        id
-        name
-        price
-        headshotsCount
-        stylesCount
-        badge
-        badgeColor
-        preselected
+        ...PackageCard
       }
     }
   }

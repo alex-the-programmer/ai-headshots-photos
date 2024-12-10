@@ -1,24 +1,34 @@
+import { PackageCardFragment } from "@/generated/graphql";
+import { gql } from "@apollo/client";
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 
-const PackageCard = ({
-  planType,
-  saveText,
-  price,
-}: {
-  planType: string;
-  saveText: string;
-  price: string;
-}) => {
+const PackageCard = ({ packageNode }: { packageNode: PackageCardFragment }) => {
   return (
-    <TouchableOpacity style={styles.planCard}>
+    <TouchableOpacity
+      style={[
+        styles.planCard,
+        packageNode.preselected ? styles.preselectedPlan : {},
+      ]}
+    >
       <View style={styles.planHeader}>
-        <Text style={styles.planType}>{planType}</Text>
-        <View style={styles.saveBadge}>
-          <Text style={styles.saveText}>{saveText}</Text>
-        </View>
+        <Text style={styles.planType}>{packageNode.name}</Text>
+        {packageNode.badge ? (
+          <View
+            style={[
+              styles.saveBadge,
+              // @ts-expect-errors
+              { backgroundColor: packageNode.badgeColor.toLowerCase() },
+            ]}
+          >
+            <Text style={styles.saveText}>{packageNode.badge}</Text>
+          </View>
+        ) : null}
       </View>
-      <Text style={styles.trialText}>7-day free trial</Text>
-      <Text style={styles.price}>{price}</Text>
+      <Text style={styles.trialText}>
+        {packageNode.headshotsCount} headshots with {packageNode.stylesCount}{" "}
+        styles
+      </Text>
+      <Text style={styles.price}>${packageNode.price}</Text>
     </TouchableOpacity>
   );
 };
@@ -63,4 +73,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  preselectedPlan: {
+    borderColor: "gold",
+    borderWidth: 2,
+  },
 });
+
+const PACKAGE_CARD_FRAGMENT = gql`
+  fragment PackageCard on Package {
+    id
+    name
+    price
+    headshotsCount
+    stylesCount
+    badge
+    badgeColor
+    preselected
+  }
+`;

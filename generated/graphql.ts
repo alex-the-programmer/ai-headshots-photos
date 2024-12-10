@@ -796,23 +796,29 @@ export type WelcomeScreenSignInWithExternalAccountMutationVariables = Exact<{
 
 export type WelcomeScreenSignInWithExternalAccountMutation = { __typename?: 'Mutation', signInWithExternalAccount?: { __typename?: 'SignInWithExternalAccountPayload', clientMutationId?: string | null, userAuthentication?: { __typename?: 'UserAuthentication', jwtToken: string } | null } | null };
 
+export type PackageCardFragment = { __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean };
 
+export const PackageCardFragmentDoc = gql`
+    fragment PackageCard on Package {
+  id
+  name
+  price
+  headshotsCount
+  stylesCount
+  badge
+  badgeColor
+  preselected
+}
+    `;
 export const PackageSelectionPageDocument = gql`
     query PackageSelectionPage {
   availablePackages {
     nodes {
-      id
-      name
-      price
-      headshotsCount
-      stylesCount
-      badge
-      badgeColor
-      preselected
+      ...PackageCard
     }
   }
 }
-    `;
+    ${PackageCardFragmentDoc}`;
 
 /**
  * __usePackageSelectionPageQuery__
