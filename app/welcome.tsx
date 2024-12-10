@@ -1,12 +1,44 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { gql } from "@apollo/client";
 import SignInButton from "@/components/welcome/signInButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import React from "react";
 
 // Initialize WebBrowser for OAuth
 WebBrowser.maybeCompleteAuthSession();
 
 export default function WelcomeScreen() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [hasSession, setHasSession] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkSession = async () => {
+      const sessionToken = await AsyncStorage.getItem("session");
+      setHasSession(!!sessionToken);
+    };
+
+    checkSession();
+  }, []);
+
+  React.useEffect(() => {
+    if (hasSession) {
+      setIsLoading(false);
+      router.replace("/packageSelection");
+    }
+    setIsLoading(false);
+  }, [hasSession, router]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#fff" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {/* Grid of AI artwork examples */}
@@ -51,6 +83,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#rgba(255, 255, 255, 0.8)",
     lineHeight: 24,
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
