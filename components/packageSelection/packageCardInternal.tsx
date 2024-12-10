@@ -2,13 +2,20 @@ import { PackageCardFragment } from "@/generated/graphql";
 import { gql } from "@apollo/client";
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 
-const PackageCard = ({ packageNode }: { packageNode: PackageCardFragment }) => {
+const PackageCardInternal = ({
+  packageNode,
+  onPress,
+}: {
+  packageNode: PackageCardFragment;
+  onPress: () => void;
+}) => {
   return (
     <TouchableOpacity
       style={[
         styles.packageCard,
         packageNode.preselected ? styles.preselectedPlan : {},
       ]}
+      onPress={onPress}
     >
       <View style={styles.packageHeader}>
         <Text style={styles.packageName}>{packageNode.name}</Text>
@@ -33,7 +40,7 @@ const PackageCard = ({ packageNode }: { packageNode: PackageCardFragment }) => {
   );
 };
 
-export default PackageCard;
+export default PackageCardInternal;
 
 const styles = StyleSheet.create({
   packageCard: {
