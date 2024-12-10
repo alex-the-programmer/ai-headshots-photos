@@ -22,6 +22,7 @@ import {
   FetchResult,
   Observable,
 } from "@apollo/client";
+import { Platform } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -44,9 +45,12 @@ export default function RootLayout() {
         let handle: any;
         Promise.resolve(AsyncStorage.getItem("session"))
           .then((session) => {
+            const sessionData = JSON.parse(session || "{}");
             operation.setContext({
               headers: {
-                userSession: session || "",
+                userSession: sessionData.jwtToken || "",
+                platform: Platform.OS === "ios" ? "apple" : "google",
+                accountId: sessionData.accountId || "",
               },
             });
           })

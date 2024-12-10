@@ -27,7 +27,12 @@ const SignInButton = () => {
       });
       await AsyncStorage.setItem(
         "session",
-        data.data?.signInWithExternalAccount?.userAuthentication?.jwtToken || ""
+        JSON.stringify({
+          jwtToken:
+            data.data?.signInWithExternalAccount?.userAuthentication
+              ?.jwtToken || "",
+          accountId: credential.user,
+        })
       );
       router.push("/payment");
     } catch (e: any) {
