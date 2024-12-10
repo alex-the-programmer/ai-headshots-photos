@@ -15,7 +15,6 @@ import { usePackageSelectionPageQuery } from "@/generated/graphql";
 import Loading from "@/components/common/loading";
 
 const PackageSelectionScreen = () => {
-  const router = useRouter();
   const {
     data: packageList,
     loading: packageListLoading,
@@ -37,7 +36,7 @@ const PackageSelectionScreen = () => {
           />
           <View style={styles.premiumBadge}>
             <Text style={styles.premiumText}>Premium Quality</Text>
-          </View>{" "}
+          </View>
           <Text style={styles.heroTitle}>Choose a package</Text>
         </View>
 
@@ -64,14 +63,6 @@ const PackageSelectionScreen = () => {
           keyExtractor={(item) => item.id}
           style={styles.plansContainer}
           contentContainerStyle={{ gap: 15 }}
-        />
-
-        {/* Subscribe Button */}
-        <PrimaryButton
-          text="Subscribe Now"
-          onPress={() => {
-            router.push("/imagesUpload");
-          }}
         />
       </View>
     </SafeAreaView>
