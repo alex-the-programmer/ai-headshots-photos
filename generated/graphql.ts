@@ -295,6 +295,7 @@ export enum OrderProcessingStatusEnum {
 
 export type Package = {
   __typename?: 'Package';
+  appleProductId: Scalars['String']['output'];
   badge?: Maybe<Scalars['String']['output']>;
   badgeColor?: Maybe<PackageBadgeColorEnum>;
   headshotsCount: Scalars['Int']['output'];
@@ -787,7 +788,7 @@ export type VerifyStripeSessionPayload = {
 export type PackageSelectionPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PackageSelectionPageQuery = { __typename?: 'Query', availablePackages: { __typename?: 'PackageConnection', nodes: Array<{ __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean }> } };
+export type PackageSelectionPageQuery = { __typename?: 'Query', availablePackages: { __typename?: 'PackageConnection', nodes: Array<{ __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string }> } };
 
 export type WelcomeScreenSignInWithExternalAccountMutationVariables = Exact<{
   input: SignInWithExternalAccountInput;
@@ -796,7 +797,7 @@ export type WelcomeScreenSignInWithExternalAccountMutationVariables = Exact<{
 
 export type WelcomeScreenSignInWithExternalAccountMutation = { __typename?: 'Mutation', signInWithExternalAccount?: { __typename?: 'SignInWithExternalAccountPayload', clientMutationId?: string | null, userAuthentication?: { __typename?: 'UserAuthentication', jwtToken: string } | null } | null };
 
-export type PackageCardFragment = { __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean };
+export type PackageCardFragment = { __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string };
 
 export const PackageCardFragmentDoc = gql`
     fragment PackageCard on Package {
@@ -808,6 +809,7 @@ export const PackageCardFragmentDoc = gql`
   badge
   badgeColor
   preselected
+  appleProductId
 }
     `;
 export const PackageSelectionPageDocument = gql`

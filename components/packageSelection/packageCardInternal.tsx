@@ -96,5 +96,6 @@ const PACKAGE_CARD_FRAGMENT = gql`
     badge
     badgeColor
     preselected
+    appleProductId
   }
 `;
