@@ -17,6 +17,7 @@ const SelectedStyles = ({ cart }: { cart: CartFragment }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const renderPlaceholders = (order) => {
+    if (!order.package) return null;
     const selectedStylesCount = order.projectStyles.nodes.length;
     const totalStylesCount = order.package.stylesCount;
     const remainingStyles = totalStylesCount - selectedStylesCount;
@@ -29,8 +30,8 @@ const SelectedStyles = ({ cart }: { cart: CartFragment }) => {
         <View key={`placeholder-${index}`} style={styles.placeholderCard}>
           <View style={styles.placeholderImage} />
           <Text style={styles.placeholderText}>
-            Select at least {remainingStyles}{" "}
-            {selectedStylesCount > 0 ? "more" : ""} style
+            Select {remainingStyles} {selectedStylesCount > 0 ? "more" : ""}{" "}
+            style
             {remainingStyles > 1 ? "s" : ""}
           </Text>
         </View>

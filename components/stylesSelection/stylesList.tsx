@@ -9,10 +9,12 @@ const StylesList = ({
   availableStyles,
   availableProperties,
   projectId,
+  disabled,
 }: {
   availableStyles: StyleStyleSelectionCardFragment[];
   availableProperties: PropertyStyleSelectionCardFragment[];
   projectId: string;
+  disabled: boolean;
 }) => (
   <FlatList
     data={availableStyles}
@@ -21,6 +23,7 @@ const StylesList = ({
         style={item}
         availableProperties={availableProperties}
         projectId={projectId}
+        disabled={disabled}
       />
     )}
   />

@@ -4,7 +4,7 @@ import {
   StyleStyleSelectionCardFragment,
 } from "@/generated/graphql";
 import IntoCard from "../common/intoCard";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Alert } from "react-native";
 import { useState } from "react";
 import StylesSelectionModal from "./stylesSelectionModal";
 import { gql } from "@apollo/client";
@@ -13,19 +13,30 @@ const StyleSelectionCard = ({
   style,
   availableProperties,
   projectId,
+  disabled,
 }: {
   style: StyleStyleSelectionCardFragment;
   availableProperties: PropertyStyleSelectionCardFragment[];
   projectId: string;
+  disabled: boolean;
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const handleStylePress = () => {
     setModalVisible(true);
   };
 
+  const maxStylesReachedAlert = () => {
+    Alert.alert(
+      "You have reached the maximum number of styles that you paid for."
+    );
+  };
+
   return (
     <>
-      <IntoCard onPress={handleStylePress} thumbnails={[style.logo]}>
+      <IntoCard
+        onPress={disabled ? maxStylesReachedAlert : handleStylePress}
+        thumbnails={[style.logo]}
+      >
         <Text style={styles.whiteText}>{style.name}</Text>
       </IntoCard>
       <StylesSelectionModal

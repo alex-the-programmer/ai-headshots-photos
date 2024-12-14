@@ -5,6 +5,7 @@ import StylesList from "@/components/stylesSelection/stylesList";
 import { useStylesSelectionPageQuery } from "@/generated/graphql";
 import { gql } from "@apollo/client";
 import { router, useLocalSearchParams } from "expo-router";
+import { useMemo } from "react";
 import { Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -16,8 +17,16 @@ const StylesSelection = () => {
     },
   });
 
-  if (!data) return <Loading />;
+  const canSelectMoreStyles = useMemo(() => {
+    const selectedStylesCount =
+      data?.currentUser?.project?.orders.nodes[0]?.projectStyles?.nodes
+        ?.length ?? 0;
+    const allowedStylesCount =
+      data?.currentUser?.project?.orders.nodes[0]?.package?.stylesCount ?? 0;
+    return selectedStylesCount < allowedStylesCount;
+  }, [data]);
 
+  if (!data) return <Loading />;
   return (
     <SafeAreaView style={styles.container}>
       <Text style={[styles.whiteText, styles.header]}>Select Styles</Text>
@@ -25,6 +34,7 @@ const StylesSelection = () => {
         availableStyles={data?.availableStyles?.nodes}
         availableProperties={data?.availableProperties?.nodes}
         projectId={projectId}
+        disabled={!canSelectMoreStyles}
       />
       {data.currentUser?.project && (
         <SelectedStyles cart={data.currentUser.project} />
