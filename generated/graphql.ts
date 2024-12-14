@@ -811,6 +811,13 @@ export type PackageSelectionPageQueryVariables = Exact<{ [key: string]: never; }
 
 export type PackageSelectionPageQuery = { __typename?: 'Query', availablePackages: { __typename?: 'PackageConnection', nodes: Array<{ __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string }> } };
 
+export type StylesSelectionPageQueryVariables = Exact<{
+  projectId: Scalars['ID']['input'];
+}>;
+
+
+export type StylesSelectionPageQuery = { __typename?: 'Query', availableStyles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string, name: string, logo: string }> }, availableProperties: { __typename?: 'PropertyConnection', nodes: Array<{ __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } }> }, currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string } } | null };
+
 export type ChoosePackageMutationVariables = Exact<{
   projectId: Scalars['ID']['input'];
   packageId: Scalars['ID']['input'];
@@ -827,6 +834,10 @@ export type VerifyApplePaymentMutationVariables = Exact<{
 export type VerifyApplePaymentMutation = { __typename?: 'Mutation', verifyApplePayment?: { __typename?: 'VerifyApplePaymentPayload', order: { __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, package?: { __typename?: 'Package', id: string } | null } } | null };
 
 export type PackageCardFragment = { __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string };
+
+export type StyleStyleSelectionCardFragment = { __typename?: 'Style', id: string, name: string, logo: string };
+
+export type PropertyStyleSelectionCardFragment = { __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } };
 
 export type WelcomeScreenSignInWithExternalAccountMutationVariables = Exact<{
   input: SignInWithExternalAccountInput;
@@ -851,6 +862,25 @@ export const PackageCardFragmentDoc = gql`
   badgeColor
   preselected
   appleProductId
+}
+    `;
+export const StyleStyleSelectionCardFragmentDoc = gql`
+    fragment styleStyleSelectionCard on Style {
+  id
+  name
+  logo
+}
+    `;
+export const PropertyStyleSelectionCardFragmentDoc = gql`
+    fragment propertyStyleSelectionCard on Property {
+  id
+  name
+  propertyValues {
+    nodes {
+      id
+      name
+    }
+  }
 }
     `;
 export const PackageSelectionPageDocument = gql`
@@ -894,6 +924,60 @@ export type PackageSelectionPageQueryHookResult = ReturnType<typeof usePackageSe
 export type PackageSelectionPageLazyQueryHookResult = ReturnType<typeof usePackageSelectionPageLazyQuery>;
 export type PackageSelectionPageSuspenseQueryHookResult = ReturnType<typeof usePackageSelectionPageSuspenseQuery>;
 export type PackageSelectionPageQueryResult = Apollo.QueryResult<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>;
+export const StylesSelectionPageDocument = gql`
+    query StylesSelectionPage($projectId: ID!) {
+  availableStyles {
+    nodes {
+      ...styleStyleSelectionCard
+    }
+  }
+  availableProperties(propertyType: FOR_STYLE) {
+    nodes {
+      ...propertyStyleSelectionCard
+    }
+  }
+  currentUser {
+    id
+    project(projectId: $projectId) {
+      id
+    }
+  }
+}
+    ${StyleStyleSelectionCardFragmentDoc}
+${PropertyStyleSelectionCardFragmentDoc}`;
+
+/**
+ * __useStylesSelectionPageQuery__
+ *
+ * To run a query within a React component, call `useStylesSelectionPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStylesSelectionPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStylesSelectionPageQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useStylesSelectionPageQuery(baseOptions: Apollo.QueryHookOptions<StylesSelectionPageQuery, StylesSelectionPageQueryVariables> & ({ variables: StylesSelectionPageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StylesSelectionPageQuery, StylesSelectionPageQueryVariables>(StylesSelectionPageDocument, options);
+      }
+export function useStylesSelectionPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StylesSelectionPageQuery, StylesSelectionPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StylesSelectionPageQuery, StylesSelectionPageQueryVariables>(StylesSelectionPageDocument, options);
+        }
+export function useStylesSelectionPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<StylesSelectionPageQuery, StylesSelectionPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<StylesSelectionPageQuery, StylesSelectionPageQueryVariables>(StylesSelectionPageDocument, options);
+        }
+export type StylesSelectionPageQueryHookResult = ReturnType<typeof useStylesSelectionPageQuery>;
+export type StylesSelectionPageLazyQueryHookResult = ReturnType<typeof useStylesSelectionPageLazyQuery>;
+export type StylesSelectionPageSuspenseQueryHookResult = ReturnType<typeof useStylesSelectionPageSuspenseQuery>;
+export type StylesSelectionPageQueryResult = Apollo.QueryResult<StylesSelectionPageQuery, StylesSelectionPageQueryVariables>;
 export const ChoosePackageDocument = gql`
     mutation ChoosePackage($projectId: ID!, $packageId: ID!) {
   choosePackage(input: {projectId: $projectId, packageId: $packageId}) {

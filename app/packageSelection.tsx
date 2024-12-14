@@ -1,4 +1,3 @@
-import PrimaryButton from "@/components/common/primaryButton";
 import PackageCard from "@/components/packageSelection/packageCard";
 import {
   View,
@@ -9,8 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import { usePackageSelectionPageQuery } from "@/generated/graphql";
 import Loading from "@/components/common/loading";
 import { useLocalSearchParams } from "expo-router";
@@ -61,7 +59,11 @@ const PackageSelectionScreen = () => {
         <FlatList
           data={packageList?.availablePackages?.nodes}
           renderItem={({ item }) => (
-            <PackageCard key={item.id} packageNode={item} projectId={projectId} />
+            <PackageCard
+              key={item.id}
+              packageNode={item}
+              projectId={projectId}
+            />
           )}
           keyExtractor={(item) => item.id}
           style={styles.plansContainer}

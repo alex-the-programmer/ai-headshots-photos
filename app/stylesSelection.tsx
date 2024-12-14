@@ -1,16 +1,30 @@
-import IntoCard from "@/components/common/intoCard";
+import Loading from "@/components/common/loading";
 import PrimaryButton from "@/components/common/primaryButton";
 import SelectedStyles from "@/components/stylesSelection/selectedStyles";
 import StylesList from "@/components/stylesSelection/stylesList";
-import { router } from "expo-router";
-import { FlatList, Text, StyleSheet } from "react-native";
+import { useStylesSelectionPageQuery } from "@/generated/graphql";
+import { gql } from "@apollo/client";
+import { router, useLocalSearchParams } from "expo-router";
+import { Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const StylesSelection = () => {
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
+  const { data } = useStylesSelectionPageQuery({
+    variables: {
+      projectId,
+    },
+  });
+
+  if (!data) return <Loading />;
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={[styles.whiteText, styles.header]}>Select Styles</Text>
-      <StylesList />
+      <StylesList
+        availableStyles={data?.availableStyles?.nodes}
+        availableProperties={data?.availableProperties?.nodes}
+      />
       <SelectedStyles />
       <PrimaryButton
         text="Next"
@@ -39,3 +53,28 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 });
+
+export const QUERY_STYLES_SELECTION_PAGE = gql`
+  query StylesSelectionPage($projectId: ID!) {
+    availableStyles {
+      nodes {
+        ...styleStyleSelectionCard
+      }
+    }
+    availableProperties(propertyType: FOR_STYLE) {
+      nodes {
+        ...propertyStyleSelectionCard
+      }
+    }
+    currentUser {
+      id
+      project(projectId: $projectId) {
+        id
+      }
+    }
+  }
+`;
+
+// on project
+// ...projectStyleSelectionCard
+// ...cart

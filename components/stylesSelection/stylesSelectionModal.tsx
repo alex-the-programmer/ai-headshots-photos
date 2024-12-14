@@ -10,116 +10,42 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
 import PrimaryButton from "../common/primaryButton";
+import {
+  PropertyStyleSelectionCardFragment,
+  StyleStyleSelectionCardFragment,
+} from "@/generated/graphql";
+import { gql } from "@apollo/client";
+import CustomPicker from "../common/picker";
 
 interface StylesSelectionModalProps {
   visible: boolean;
   onClose: () => void;
-  style: Style | null;
+  style: StyleStyleSelectionCardFragment | null;
+  properties: PropertyStyleSelectionCardFragment[];
 }
 
 const StylesSelectionModal = ({
   visible,
   onClose,
   style,
+  properties,
 }: StylesSelectionModalProps) => {
-  const [selectedOutfit, setSelectedOutfit] = useState("Suit");
-  const [selectedColor, setSelectedColor] = useState("Green");
-  const [showOutfitPicker, setShowOutfitPicker] = useState(false);
-  const [showColorPicker, setShowColorPicker] = useState(false);
-
   if (!style) return null;
 
-  const renderPicker = Platform.select({
-    ios: (
-      <>
-        <Pressable
-          style={styles.iosPickerButton}
-          onPress={() => setShowOutfitPicker(true)}
-        >
-          <Text style={styles.iosPickerButtonText}>{selectedOutfit}</Text>
-        </Pressable>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showOutfitPicker}
-        >
-          <View style={styles.iosPickerModal}>
-            <View style={styles.iosPickerHeader}>
-              <Pressable onPress={() => setShowOutfitPicker(false)}>
-                <Text style={styles.iosPickerDoneText}>Done</Text>
-              </Pressable>
-            </View>
-            <Picker
-              selectedValue={selectedOutfit}
-              onValueChange={(itemValue) => setSelectedOutfit(itemValue)}
-              style={styles.iosPicker}
-            >
-              <Picker.Item label="Suit" value="Suit" />
-              <Picker.Item label="Sweater" value="Sweater" />
-              <Picker.Item label="Shirt" value="Shirt" />
-            </Picker>
-          </View>
-        </Modal>
-      </>
-    ),
-    android: (
-      <Picker
-        selectedValue={selectedOutfit}
-        onValueChange={(itemValue) => setSelectedOutfit(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Suit" value="Suit" />
-        <Picker.Item label="Sweater" value="Sweater" />
-        <Picker.Item label="Shirt" value="Shirt" />
-      </Picker>
-    ),
-  });
+  const outfitProperty = properties.find(
+    (property) => property.name === "Outfit"
+  );
 
-  const renderColorPicker = Platform.select({
-    ios: (
-      <>
-        <Pressable
-          style={styles.iosPickerButton}
-          onPress={() => setShowColorPicker(true)}
-        >
-          <Text style={styles.iosPickerButtonText}>{selectedColor}</Text>
-        </Pressable>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showColorPicker}
-        >
-          <View style={styles.iosPickerModal}>
-            <View style={styles.iosPickerHeader}>
-              <Pressable onPress={() => setShowColorPicker(false)}>
-                <Text style={styles.iosPickerDoneText}>Done</Text>
-              </Pressable>
-            </View>
-            <Picker
-              selectedValue={selectedColor}
-              onValueChange={(itemValue) => setSelectedColor(itemValue)}
-              style={styles.iosPicker}
-            >
-              <Picker.Item label="Green" value="Green" />
-              <Picker.Item label="Blue" value="Blue" />
-              <Picker.Item label="White" value="White" />
-            </Picker>
-          </View>
-        </Modal>
-      </>
-    ),
-    android: (
-      <Picker
-        selectedValue={selectedColor}
-        onValueChange={(itemValue) => setSelectedColor(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Green" value="Green" />
-        <Picker.Item label="Blue" value="Blue" />
-        <Picker.Item label="White" value="White" />
-      </Picker>
-    ),
-  });
+  const outfitColorProperty = properties.find(
+    (property) => property.name === "Outfit Color"
+  );
+
+  const [selectedOutfit, setSelectedOutfit] = useState(
+    outfitProperty?.propertyValues.nodes[0].id
+  );
+  const [selectedColor, setSelectedColor] = useState(
+    outfitColorProperty?.propertyValues.nodes[0].id
+  );
 
   return (
     <Modal
@@ -133,10 +59,30 @@ const StylesSelectionModal = ({
           <Text style={styles.modalText}>{style.name}</Text>
 
           <Text style={styles.labelText}>Outfit</Text>
-          <View style={styles.pickerContainer}>{renderPicker}</View>
+          <View style={styles.pickerContainer}>
+            <CustomPicker
+              options={outfitProperty?.propertyValues.nodes.map((node) => ({
+                name: node.name,
+                value: node.id,
+              }))}
+              selectedValue={selectedOutfit}
+              onValueChange={setSelectedOutfit}
+            />
+          </View>
 
           <Text style={styles.labelText}>Outfit Color</Text>
-          <View style={styles.pickerContainer}>{renderColorPicker}</View>
+          <View style={styles.pickerContainer}>
+            <CustomPicker
+              options={outfitColorProperty?.propertyValues.nodes.map(
+                (node) => ({
+                  name: node.name,
+                  value: node.id,
+                })
+              )}
+              selectedValue={selectedColor}
+              onValueChange={setSelectedColor}
+            />
+          </View>
 
           <View style={styles.buttonContainer}>
             <PrimaryButton text="Back" onPress={onClose} />
@@ -177,11 +123,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     backgroundColor: "#2196F3",
   },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
+
   modalText: {
     marginBottom: 15,
     textAlign: "center",
@@ -191,52 +133,14 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 15,
   },
-  picker: {
-    minWidth: 200,
-    width: "100%",
-    height: 50,
-  },
+
   labelText: {
     fontSize: 16,
     marginBottom: 5,
     alignSelf: "flex-start",
     color: "white",
   },
-  iosPickerButton: {
-    width: "100%",
-    padding: 12,
-    backgroundColor: "#2a2a2a",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#333",
-  },
-  iosPickerButtonText: {
-    fontSize: 16,
-    color: "white",
-    textAlign: "center",
-  },
-  iosPickerModal: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "white",
-  },
-  iosPickerHeader: {
-    borderBottomWidth: 1,
-    borderColor: "#ccc",
-    padding: 15,
-    backgroundColor: "#f8f8f8",
-    alignItems: "flex-end",
-  },
-  iosPickerDoneText: {
-    color: "#007AFF",
-    fontSize: 17,
-  },
-  iosPicker: {
-    width: "100%",
-    height: 215,
-  },
+
   buttonContainer: {
     flexDirection: "row",
     gap: 10,
@@ -245,3 +149,16 @@ const styles = StyleSheet.create({
 });
 
 export default StylesSelectionModal;
+
+export const FRAGMENT_PROPERTY_STYLE_SELECTION_CARD = gql`
+  fragment propertyStyleSelectionCard on Property {
+    id
+    name
+    propertyValues {
+      nodes {
+        id
+        name
+      }
+    }
+  }
+`;
