@@ -817,7 +817,14 @@ export type ChoosePackageMutationVariables = Exact<{
 }>;
 
 
-export type ChoosePackageMutation = { __typename?: 'Mutation', choosePackage?: { __typename?: 'ChoosePackagePayload', project: { __typename?: 'Project', id: string } } | null };
+export type ChoosePackageMutation = { __typename?: 'Mutation', choosePackage?: { __typename?: 'ChoosePackagePayload', project: { __typename?: 'Project', id: string, lastOrder?: { __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, package?: { __typename?: 'Package', id: string } | null } | null } } | null };
+
+export type VerifyApplePaymentMutationVariables = Exact<{
+  orderId: Scalars['ID']['input'];
+}>;
+
+
+export type VerifyApplePaymentMutation = { __typename?: 'Mutation', verifyApplePayment?: { __typename?: 'VerifyApplePaymentPayload', order: { __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, package?: { __typename?: 'Package', id: string } | null } } | null };
 
 export type PackageCardFragment = { __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string };
 
@@ -892,6 +899,13 @@ export const ChoosePackageDocument = gql`
   choosePackage(input: {projectId: $projectId, packageId: $packageId}) {
     project {
       id
+      lastOrder {
+        id
+        processingStatus
+        package {
+          id
+        }
+      }
     }
   }
 }
@@ -923,6 +937,45 @@ export function useChoosePackageMutation(baseOptions?: Apollo.MutationHookOption
 export type ChoosePackageMutationHookResult = ReturnType<typeof useChoosePackageMutation>;
 export type ChoosePackageMutationResult = Apollo.MutationResult<ChoosePackageMutation>;
 export type ChoosePackageMutationOptions = Apollo.BaseMutationOptions<ChoosePackageMutation, ChoosePackageMutationVariables>;
+export const VerifyApplePaymentDocument = gql`
+    mutation VerifyApplePayment($orderId: ID!) {
+  verifyApplePayment(input: {orderId: $orderId}) {
+    order {
+      id
+      processingStatus
+      package {
+        id
+      }
+    }
+  }
+}
+    `;
+export type VerifyApplePaymentMutationFn = Apollo.MutationFunction<VerifyApplePaymentMutation, VerifyApplePaymentMutationVariables>;
+
+/**
+ * __useVerifyApplePaymentMutation__
+ *
+ * To run a mutation, you first call `useVerifyApplePaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVerifyApplePaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [verifyApplePaymentMutation, { data, loading, error }] = useVerifyApplePaymentMutation({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function useVerifyApplePaymentMutation(baseOptions?: Apollo.MutationHookOptions<VerifyApplePaymentMutation, VerifyApplePaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VerifyApplePaymentMutation, VerifyApplePaymentMutationVariables>(VerifyApplePaymentDocument, options);
+      }
+export type VerifyApplePaymentMutationHookResult = ReturnType<typeof useVerifyApplePaymentMutation>;
+export type VerifyApplePaymentMutationResult = Apollo.MutationResult<VerifyApplePaymentMutation>;
+export type VerifyApplePaymentMutationOptions = Apollo.BaseMutationOptions<VerifyApplePaymentMutation, VerifyApplePaymentMutationVariables>;
 export const WelcomeScreenSignInWithExternalAccountDocument = gql`
     mutation WelcomeScreenSignInWithExternalAccount($input: SignInWithExternalAccountInput!) {
   signInWithExternalAccount(input: $input) {

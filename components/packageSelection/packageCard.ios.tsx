@@ -1,11 +1,14 @@
 import {
+  OrderProcessingStatusEnum,
   PackageCardFragment,
   useChoosePackageMutation,
+  useVerifyApplePaymentMutation,
 } from "@/generated/graphql";
 import PackageCardInternal from "./packageCardInternal";
 
 import Constants from "expo-constants";
 import { gql } from "@apollo/client";
+import { useRouter } from "expo-router";
 
 const PackageCard = ({
   packageNode,
@@ -14,16 +17,37 @@ const PackageCard = ({
   packageNode: PackageCardFragment;
   projectId: string;
 }) => {
-  console.log("inside package card", projectId);
+  const router = useRouter();
   const [choosePackage] = useChoosePackageMutation();
+  const [verifyApplePayment] = useVerifyApplePaymentMutation();
   const onPress = async () => {
     if (Constants.appOwnership === "expo") {
-      await choosePackage({
+      const choosePackageResult = await choosePackage({
         variables: {
           projectId: projectId,
           packageId: packageNode.id,
         },
       });
+      const verifyApplePaymentResult = await verifyApplePayment({
+        variables: {
+          orderId:
+            choosePackageResult.data?.choosePackage?.project?.lastOrder?.id ??
+            "",
+        },
+      });
+      if (
+        verifyApplePaymentResult.data?.verifyApplePayment?.order
+          ?.processingStatus === OrderProcessingStatusEnum.PaymentProcessed
+      ) {
+        router.push({
+          pathname: "/stylesSelection",
+          params: {
+            projectId: projectId,
+          },
+        });
+      } else {
+        console.log("payment not processed");
+      }
       return;
     }
     const InAppPurchases = await import("expo-in-app-purchases");
@@ -62,6 +86,27 @@ export const CHOOSE_PACKAGE_MUTATION = gql`
     choosePackage(input: { projectId: $projectId, packageId: $packageId }) {
       project {
         id
+        lastOrder {
+          id
+          processingStatus
+          package {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const MUTATION_VERIFY_APPLE_PAYMENT = gql`
+  mutation VerifyApplePayment($orderId: ID!) {
+    verifyApplePayment(input: { orderId: $orderId }) {
+      order {
+        id
+        processingStatus
+        package {
+          id
+        }
       }
     }
   }
