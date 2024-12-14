@@ -28,7 +28,11 @@ const SelectedStyles = ({ cart }: { cart: CartFragment }) => {
       .map((_, index) => (
         <View key={`placeholder-${index}`} style={styles.placeholderCard}>
           <View style={styles.placeholderImage} />
-          <Text style={styles.placeholderText}>Select More Styles</Text>
+          <Text style={styles.placeholderText}>
+            Select at least {remainingStyles}{" "}
+            {selectedStylesCount > 0 ? "more" : ""} style
+            {remainingStyles > 1 ? "s" : ""}
+          </Text>
         </View>
       ));
   };
@@ -65,18 +69,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
+    width: 90,
   },
   placeholderImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 8,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     borderWidth: 2,
     borderStyle: "dashed",
     borderColor: "#CCCCCC",
   },
   placeholderText: {
-    fontSize: 14,
+    fontSize: 12,
     color: "#666666",
+    textAlign: "center",
   },
 });
 
