@@ -106,10 +106,10 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="welcome" />
-          <Stack.Screen name="packageSelection" />
+          {/* <Stack.Screen name="packageSelection" />
           <Stack.Screen name="imagesUpload" />
           <Stack.Screen name="projectStack" />
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(tabs)" /> */}
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />

@@ -41,8 +41,9 @@ const StylesSelection = () => {
       )}
       <PrimaryButton
         text="Next"
+        disabled={canSelectMoreStyles}
         onPress={() => {
-          router.push("/projectStack");
+          router.push("/genderSelection");
         }}
       />
     </SafeAreaView>
