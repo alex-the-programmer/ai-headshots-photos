@@ -841,6 +841,13 @@ export type CartFragment = { __typename?: 'Project', id: string, processingStatu
 
 export type StyleStyleSelectionCardFragment = { __typename?: 'Style', id: string, name: string, logo: string };
 
+export type DeleteProjectStyleMutationVariables = Exact<{
+  projectStyleId: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteProjectStyleMutation = { __typename?: 'Mutation', deleteProjectStyle?: { __typename?: 'DeleteProjectStylePayload', project: { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, subtotal: number, package?: { __typename?: 'Package', id: string, name: string, stylesCount: number } | null, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } }> } }> } } } | null };
+
 export type PropertyStyleSelectionCardFragment = { __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } };
 
 export type AddProjectStyleMutationVariables = Exact<{
@@ -1121,6 +1128,41 @@ export function useVerifyApplePaymentMutation(baseOptions?: Apollo.MutationHookO
 export type VerifyApplePaymentMutationHookResult = ReturnType<typeof useVerifyApplePaymentMutation>;
 export type VerifyApplePaymentMutationResult = Apollo.MutationResult<VerifyApplePaymentMutation>;
 export type VerifyApplePaymentMutationOptions = Apollo.BaseMutationOptions<VerifyApplePaymentMutation, VerifyApplePaymentMutationVariables>;
+export const DeleteProjectStyleDocument = gql`
+    mutation deleteProjectStyle($projectStyleId: ID!) {
+  deleteProjectStyle(input: {projectStyleId: $projectStyleId}) {
+    project {
+      ...cart
+    }
+  }
+}
+    ${CartFragmentDoc}`;
+export type DeleteProjectStyleMutationFn = Apollo.MutationFunction<DeleteProjectStyleMutation, DeleteProjectStyleMutationVariables>;
+
+/**
+ * __useDeleteProjectStyleMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectStyleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectStyleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProjectStyleMutation, { data, loading, error }] = useDeleteProjectStyleMutation({
+ *   variables: {
+ *      projectStyleId: // value for 'projectStyleId'
+ *   },
+ * });
+ */
+export function useDeleteProjectStyleMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectStyleMutation, DeleteProjectStyleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProjectStyleMutation, DeleteProjectStyleMutationVariables>(DeleteProjectStyleDocument, options);
+      }
+export type DeleteProjectStyleMutationHookResult = ReturnType<typeof useDeleteProjectStyleMutation>;
+export type DeleteProjectStyleMutationResult = Apollo.MutationResult<DeleteProjectStyleMutation>;
+export type DeleteProjectStyleMutationOptions = Apollo.BaseMutationOptions<DeleteProjectStyleMutation, DeleteProjectStyleMutationVariables>;
 export const AddProjectStyleDocument = gql`
     mutation addProjectStyle($projectId: ID!, $styleId: ID!, $propertyValueIds: [ID!]!) {
   addProjectStyle(

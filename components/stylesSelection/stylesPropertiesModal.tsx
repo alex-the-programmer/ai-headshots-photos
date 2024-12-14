@@ -1,7 +1,11 @@
 import React from "react";
 import { Modal, View, Text, StyleSheet, Image } from "react-native";
 import PrimaryButton from "../common/primaryButton";
-import { CartProjectStyleFragment } from "@/generated/graphql";
+import {
+  CartProjectStyleFragment,
+  useDeleteProjectStyleMutation,
+} from "@/generated/graphql";
+import { gql } from "@apollo/client";
 
 interface StylesPropertiesModalProps {
   visible: boolean;
@@ -17,7 +21,14 @@ const StylesPropertiesModal = ({
 }: StylesPropertiesModalProps) => {
   if (!projectStyle) return null;
 
+  const [deleteProjectStyle] = useDeleteProjectStyleMutation();
+
   const onDelete = () => {
+    deleteProjectStyle({
+      variables: {
+        projectStyleId: projectStyle.id,
+      },
+    });
     onClose();
   };
 
@@ -143,3 +154,13 @@ const styles = StyleSheet.create({
 });
 
 export default StylesPropertiesModal;
+
+export const MUTATION_DELETE_PROJECT_STYLE = gql`
+  mutation deleteProjectStyle($projectStyleId: ID!) {
+    deleteProjectStyle(input: { projectStyleId: $projectStyleId }) {
+      project {
+        ...cart
+      }
+    }
+  }
+`;
