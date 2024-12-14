@@ -47,7 +47,11 @@ const CustomPicker = ({
             style={styles.iosPicker}
           >
             {options.map((option) => (
-              <Picker.Item label={option.name} value={option.value} />
+              <Picker.Item
+                label={option.name}
+                value={option.value}
+                key={option.value}
+              />
             ))}
           </Picker>
         </View>

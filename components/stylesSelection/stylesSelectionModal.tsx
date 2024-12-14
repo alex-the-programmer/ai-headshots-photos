@@ -196,6 +196,7 @@ export const MUTATION_ADD_PROJECT_STYLE = gql`
     ) {
       project {
         id
+        ...cart
       }
     }
   }
@@ -203,4 +204,4 @@ export const MUTATION_ADD_PROJECT_STYLE = gql`
 
 // on project
 // ...projectStyleSelectionCard
-// ...cart
+//

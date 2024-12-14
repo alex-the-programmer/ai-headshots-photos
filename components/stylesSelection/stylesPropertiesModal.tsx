@@ -1,27 +1,33 @@
 import React from "react";
 import { Modal, View, Text, StyleSheet, Image } from "react-native";
 import PrimaryButton from "../common/primaryButton";
+import { CartProjectStyleFragment } from "@/generated/graphql";
 
 interface StylesPropertiesModalProps {
   visible: boolean;
   onClose: () => void;
-  onDelete: (styleId: string) => void;
-  style: {
-    id: string;
-    name: string;
-    imageUrl: string;
-    outfit?: string;
-    outfitColor?: string;
-  } | null;
+
+  projectStyle: CartProjectStyleFragment;
 }
 
 const StylesPropertiesModal = ({
   visible,
   onClose,
-  onDelete,
-  style,
+  projectStyle,
 }: StylesPropertiesModalProps) => {
-  if (!style) return null;
+  if (!projectStyle) return null;
+
+  const onDelete = () => {
+    onClose();
+  };
+
+  const outfit = projectStyle.projectStyleProperties.nodes.find(
+    (property) => property.property.name === "Outfit"
+  );
+
+  const outfitColor = projectStyle.projectStyleProperties.nodes.find(
+    (property) => property.property.name === "Outfit Color"
+  );
 
   return (
     <Modal
@@ -34,22 +40,27 @@ const StylesPropertiesModal = ({
         <View style={styles.modalView}>
           <Text style={styles.modalTitle}>Style Properties</Text>
 
-          <Image source={{ uri: style.imageUrl }} style={styles.previewImage} />
+          <Image
+            source={{ uri: projectStyle.style.logo }}
+            style={styles.previewImage}
+          />
 
           <View style={styles.propertyContainer}>
             <Text style={styles.label}>Style name</Text>
-            <Text style={styles.value}>{style.name}</Text>
+            <Text style={styles.value}>{projectStyle.style.name}</Text>
           </View>
 
           <View style={styles.propertyContainer}>
             <Text style={styles.label}>Outfit</Text>
-            <Text style={styles.value}>{style.outfit || "Not specified"}</Text>
+            <Text style={styles.value}>
+              {outfit?.propertyValue?.name || "Not specified"}
+            </Text>
           </View>
 
           <View style={styles.propertyContainer}>
             <Text style={styles.label}>Outfit Color</Text>
             <Text style={styles.value}>
-              {style.outfitColor || "Not specified"}
+              {outfitColor?.propertyValue?.name || "Not specified"}
             </Text>
           </View>
 
@@ -57,7 +68,7 @@ const StylesPropertiesModal = ({
             <PrimaryButton text="Back" onPress={onClose} />
             <PrimaryButton
               text="Delete"
-              onPress={() => onDelete(style.id)}
+              onPress={onDelete}
               style={styles.deleteButton}
               textStyle={styles.deleteButtonText}
             />

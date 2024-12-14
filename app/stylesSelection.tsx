@@ -26,7 +26,9 @@ const StylesSelection = () => {
         availableProperties={data?.availableProperties?.nodes}
         projectId={projectId}
       />
-      <SelectedStyles />
+      {data.currentUser?.project && (
+        <SelectedStyles cart={data.currentUser.project} />
+      )}
       <PrimaryButton
         text="Next"
         onPress={() => {
@@ -71,6 +73,7 @@ export const QUERY_STYLES_SELECTION_PAGE = gql`
       id
       project(projectId: $projectId) {
         id
+        ...cart
       }
     }
   }
@@ -78,4 +81,4 @@ export const QUERY_STYLES_SELECTION_PAGE = gql`
 
 // on project
 // ...projectStyleSelectionCard
-// ...cart
+//

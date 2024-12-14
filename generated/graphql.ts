@@ -816,7 +816,7 @@ export type StylesSelectionPageQueryVariables = Exact<{
 }>;
 
 
-export type StylesSelectionPageQuery = { __typename?: 'Query', availableStyles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string, name: string, logo: string }> }, availableProperties: { __typename?: 'PropertyConnection', nodes: Array<{ __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } }> }, currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string } } | null };
+export type StylesSelectionPageQuery = { __typename?: 'Query', availableStyles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string, name: string, logo: string }> }, availableProperties: { __typename?: 'PropertyConnection', nodes: Array<{ __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } }> }, currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, subtotal: number, package?: { __typename?: 'Package', id: string, name: string, stylesCount: number } | null, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } }> } }> } } } | null };
 
 export type ChoosePackageMutationVariables = Exact<{
   projectId: Scalars['ID']['input'];
@@ -835,6 +835,10 @@ export type VerifyApplePaymentMutation = { __typename?: 'Mutation', verifyAppleP
 
 export type PackageCardFragment = { __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string };
 
+export type CartProjectStyleFragment = { __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } };
+
+export type CartFragment = { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, subtotal: number, package?: { __typename?: 'Package', id: string, name: string, stylesCount: number } | null, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } }> } }> } };
+
 export type StyleStyleSelectionCardFragment = { __typename?: 'Style', id: string, name: string, logo: string };
 
 export type PropertyStyleSelectionCardFragment = { __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } };
@@ -846,7 +850,7 @@ export type AddProjectStyleMutationVariables = Exact<{
 }>;
 
 
-export type AddProjectStyleMutation = { __typename?: 'Mutation', addProjectStyle?: { __typename?: 'AddProjectStylePayload', project: { __typename?: 'Project', id: string } } | null };
+export type AddProjectStyleMutation = { __typename?: 'Mutation', addProjectStyle?: { __typename?: 'AddProjectStylePayload', project: { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, subtotal: number, package?: { __typename?: 'Package', id: string, name: string, stylesCount: number } | null, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } }> } }> } } } | null };
 
 export type WelcomeScreenSignInWithExternalAccountMutationVariables = Exact<{
   input: SignInWithExternalAccountInput;
@@ -880,6 +884,52 @@ export const StyleStyleSelectionCardFragmentDoc = gql`
   logo
 }
     `;
+export const CartProjectStyleFragmentDoc = gql`
+    fragment cartProjectStyle on ProjectStyle {
+  id
+  style {
+    ...styleStyleSelectionCard
+  }
+  projectStyleProperties {
+    nodes {
+      id
+      property {
+        id
+        name
+      }
+      propertyValue {
+        id
+        name
+      }
+    }
+  }
+  numberOfPhotos
+  price
+}
+    ${StyleStyleSelectionCardFragmentDoc}`;
+export const CartFragmentDoc = gql`
+    fragment cart on Project {
+  id
+  processingStatus
+  orders {
+    nodes {
+      id
+      processingStatus
+      subtotal
+      package {
+        id
+        name
+        stylesCount
+      }
+      projectStyles {
+        nodes {
+          ...cartProjectStyle
+        }
+      }
+    }
+  }
+}
+    ${CartProjectStyleFragmentDoc}`;
 export const PropertyStyleSelectionCardFragmentDoc = gql`
     fragment propertyStyleSelectionCard on Property {
   id
@@ -949,11 +999,13 @@ export const StylesSelectionPageDocument = gql`
     id
     project(projectId: $projectId) {
       id
+      ...cart
     }
   }
 }
     ${StyleStyleSelectionCardFragmentDoc}
-${PropertyStyleSelectionCardFragmentDoc}`;
+${PropertyStyleSelectionCardFragmentDoc}
+${CartFragmentDoc}`;
 
 /**
  * __useStylesSelectionPageQuery__
@@ -1076,10 +1128,11 @@ export const AddProjectStyleDocument = gql`
   ) {
     project {
       id
+      ...cart
     }
   }
 }
-    `;
+    ${CartFragmentDoc}`;
 export type AddProjectStyleMutationFn = Apollo.MutationFunction<AddProjectStyleMutation, AddProjectStyleMutationVariables>;
 
 /**
