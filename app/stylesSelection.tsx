@@ -43,7 +43,12 @@ const StylesSelection = () => {
         text="Next"
         disabled={canSelectMoreStyles}
         onPress={() => {
-          router.push("/genderSelection");
+          router.push({
+            pathname: "/genderSelection",
+            params: {
+              projectId,
+            },
+          });
         }}
       />
     </SafeAreaView>

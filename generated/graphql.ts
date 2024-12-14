@@ -806,6 +806,19 @@ export type VerifyStripeSessionPayload = {
   order: Order;
 };
 
+export type GenderSelectorQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenderSelectorQuery = { __typename?: 'Query', availableProperties: { __typename?: 'PropertyConnection', nodes: Array<{ __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } }> } };
+
+export type UpdateProjectPropertyValueMutationVariables = Exact<{
+  projectId: Scalars['ID']['input'];
+  propertyValueId: Scalars['ID']['input'];
+}>;
+
+
+export type UpdateProjectPropertyValueMutation = { __typename?: 'Mutation', updateProjectPropertyValue?: { __typename?: 'UpdateProjectPropertyValuePayload', project: { __typename?: 'Project', id: string, genderPropertyValue?: { __typename?: 'PropertyValue', id: string } | null } } | null };
+
 export type PackageSelectionPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -949,6 +962,95 @@ export const PropertyStyleSelectionCardFragmentDoc = gql`
   }
 }
     `;
+export const GenderSelectorDocument = gql`
+    query GenderSelector {
+  availableProperties(propertyType: FOR_PROJECT) {
+    nodes {
+      id
+      name
+      propertyValues {
+        nodes {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGenderSelectorQuery__
+ *
+ * To run a query within a React component, call `useGenderSelectorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenderSelectorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenderSelectorQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGenderSelectorQuery(baseOptions?: Apollo.QueryHookOptions<GenderSelectorQuery, GenderSelectorQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenderSelectorQuery, GenderSelectorQueryVariables>(GenderSelectorDocument, options);
+      }
+export function useGenderSelectorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenderSelectorQuery, GenderSelectorQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenderSelectorQuery, GenderSelectorQueryVariables>(GenderSelectorDocument, options);
+        }
+export function useGenderSelectorSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GenderSelectorQuery, GenderSelectorQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GenderSelectorQuery, GenderSelectorQueryVariables>(GenderSelectorDocument, options);
+        }
+export type GenderSelectorQueryHookResult = ReturnType<typeof useGenderSelectorQuery>;
+export type GenderSelectorLazyQueryHookResult = ReturnType<typeof useGenderSelectorLazyQuery>;
+export type GenderSelectorSuspenseQueryHookResult = ReturnType<typeof useGenderSelectorSuspenseQuery>;
+export type GenderSelectorQueryResult = Apollo.QueryResult<GenderSelectorQuery, GenderSelectorQueryVariables>;
+export const UpdateProjectPropertyValueDocument = gql`
+    mutation UpdateProjectPropertyValue($projectId: ID!, $propertyValueId: ID!) {
+  updateProjectPropertyValue(
+    input: {projectId: $projectId, propertyValueId: $propertyValueId}
+  ) {
+    project {
+      id
+      genderPropertyValue {
+        id
+      }
+    }
+  }
+}
+    `;
+export type UpdateProjectPropertyValueMutationFn = Apollo.MutationFunction<UpdateProjectPropertyValueMutation, UpdateProjectPropertyValueMutationVariables>;
+
+/**
+ * __useUpdateProjectPropertyValueMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectPropertyValueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectPropertyValueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectPropertyValueMutation, { data, loading, error }] = useUpdateProjectPropertyValueMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      propertyValueId: // value for 'propertyValueId'
+ *   },
+ * });
+ */
+export function useUpdateProjectPropertyValueMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectPropertyValueMutation, UpdateProjectPropertyValueMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectPropertyValueMutation, UpdateProjectPropertyValueMutationVariables>(UpdateProjectPropertyValueDocument, options);
+      }
+export type UpdateProjectPropertyValueMutationHookResult = ReturnType<typeof useUpdateProjectPropertyValueMutation>;
+export type UpdateProjectPropertyValueMutationResult = Apollo.MutationResult<UpdateProjectPropertyValueMutation>;
+export type UpdateProjectPropertyValueMutationOptions = Apollo.BaseMutationOptions<UpdateProjectPropertyValueMutation, UpdateProjectPropertyValueMutationVariables>;
 export const PackageSelectionPageDocument = gql`
     query PackageSelectionPage {
   availablePackages {
