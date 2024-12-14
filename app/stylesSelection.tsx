@@ -24,6 +24,7 @@ const StylesSelection = () => {
       <StylesList
         availableStyles={data?.availableStyles?.nodes}
         availableProperties={data?.availableProperties?.nodes}
+        projectId={projectId}
       />
       <SelectedStyles />
       <PrimaryButton

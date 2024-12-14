@@ -12,9 +12,11 @@ import { gql } from "@apollo/client";
 const StyleSelectionCard = ({
   style,
   availableProperties,
+  projectId,
 }: {
   style: StyleStyleSelectionCardFragment;
   availableProperties: PropertyStyleSelectionCardFragment[];
+  projectId: string;
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const handleStylePress = () => {
@@ -31,6 +33,7 @@ const StyleSelectionCard = ({
         onClose={() => setModalVisible(false)}
         style={style}
         properties={availableProperties}
+        projectId={projectId}
       />
     </>
   );

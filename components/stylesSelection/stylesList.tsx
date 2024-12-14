@@ -8,9 +8,11 @@ import {
 const StylesList = ({
   availableStyles,
   availableProperties,
+  projectId,
 }: {
   availableStyles: StyleStyleSelectionCardFragment[];
   availableProperties: PropertyStyleSelectionCardFragment[];
+  projectId: string;
 }) => (
   <FlatList
     data={availableStyles}
@@ -18,6 +20,7 @@ const StylesList = ({
       <StyleSelectionCard
         style={item}
         availableProperties={availableProperties}
+        projectId={projectId}
       />
     )}
   />

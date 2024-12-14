@@ -13,22 +13,25 @@ import PrimaryButton from "../common/primaryButton";
 import {
   PropertyStyleSelectionCardFragment,
   StyleStyleSelectionCardFragment,
+  useAddProjectStyleMutation,
 } from "@/generated/graphql";
 import { gql } from "@apollo/client";
 import CustomPicker from "../common/picker";
 
 interface StylesSelectionModalProps {
   visible: boolean;
-  onClose: () => void;
   style: StyleStyleSelectionCardFragment | null;
   properties: PropertyStyleSelectionCardFragment[];
+  onClose: () => void;
+  projectId: string;
 }
 
 const StylesSelectionModal = ({
   visible,
-  onClose,
   style,
   properties,
+  onClose,
+  projectId,
 }: StylesSelectionModalProps) => {
   if (!style) return null;
 
@@ -46,6 +49,21 @@ const StylesSelectionModal = ({
   const [selectedColor, setSelectedColor] = useState(
     outfitColorProperty?.propertyValues.nodes[0].id
   );
+
+  const [addProjectStyle] = useAddProjectStyleMutation();
+
+  const handleAddProjectStyle = async () => {
+    if (selectedOutfit && selectedColor) {
+      await addProjectStyle({
+        variables: {
+          projectId: projectId,
+          styleId: style.id,
+          propertyValueIds: [selectedOutfit, selectedColor],
+        },
+      });
+      onClose();
+    }
+  };
 
   return (
     <Modal
@@ -86,7 +104,7 @@ const StylesSelectionModal = ({
 
           <View style={styles.buttonContainer}>
             <PrimaryButton text="Back" onPress={onClose} />
-            <PrimaryButton text="Add" onPress={onClose} />
+            <PrimaryButton text="Add" onPress={handleAddProjectStyle} />
           </View>
         </View>
       </View>
@@ -162,3 +180,27 @@ export const FRAGMENT_PROPERTY_STYLE_SELECTION_CARD = gql`
     }
   }
 `;
+
+export const MUTATION_ADD_PROJECT_STYLE = gql`
+  mutation addProjectStyle(
+    $projectId: ID!
+    $styleId: ID!
+    $propertyValueIds: [ID!]!
+  ) {
+    addProjectStyle(
+      input: {
+        projectId: $projectId
+        styleId: $styleId
+        propertyValueIds: $propertyValueIds
+      }
+    ) {
+      project {
+        id
+      }
+    }
+  }
+`;
+
+// on project
+// ...projectStyleSelectionCard
+// ...cart

@@ -839,6 +839,15 @@ export type StyleStyleSelectionCardFragment = { __typename?: 'Style', id: string
 
 export type PropertyStyleSelectionCardFragment = { __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } };
 
+export type AddProjectStyleMutationVariables = Exact<{
+  projectId: Scalars['ID']['input'];
+  styleId: Scalars['ID']['input'];
+  propertyValueIds: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+
+export type AddProjectStyleMutation = { __typename?: 'Mutation', addProjectStyle?: { __typename?: 'AddProjectStylePayload', project: { __typename?: 'Project', id: string } } | null };
+
 export type WelcomeScreenSignInWithExternalAccountMutationVariables = Exact<{
   input: SignInWithExternalAccountInput;
 }>;
@@ -1060,6 +1069,45 @@ export function useVerifyApplePaymentMutation(baseOptions?: Apollo.MutationHookO
 export type VerifyApplePaymentMutationHookResult = ReturnType<typeof useVerifyApplePaymentMutation>;
 export type VerifyApplePaymentMutationResult = Apollo.MutationResult<VerifyApplePaymentMutation>;
 export type VerifyApplePaymentMutationOptions = Apollo.BaseMutationOptions<VerifyApplePaymentMutation, VerifyApplePaymentMutationVariables>;
+export const AddProjectStyleDocument = gql`
+    mutation addProjectStyle($projectId: ID!, $styleId: ID!, $propertyValueIds: [ID!]!) {
+  addProjectStyle(
+    input: {projectId: $projectId, styleId: $styleId, propertyValueIds: $propertyValueIds}
+  ) {
+    project {
+      id
+    }
+  }
+}
+    `;
+export type AddProjectStyleMutationFn = Apollo.MutationFunction<AddProjectStyleMutation, AddProjectStyleMutationVariables>;
+
+/**
+ * __useAddProjectStyleMutation__
+ *
+ * To run a mutation, you first call `useAddProjectStyleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProjectStyleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProjectStyleMutation, { data, loading, error }] = useAddProjectStyleMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      styleId: // value for 'styleId'
+ *      propertyValueIds: // value for 'propertyValueIds'
+ *   },
+ * });
+ */
+export function useAddProjectStyleMutation(baseOptions?: Apollo.MutationHookOptions<AddProjectStyleMutation, AddProjectStyleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProjectStyleMutation, AddProjectStyleMutationVariables>(AddProjectStyleDocument, options);
+      }
+export type AddProjectStyleMutationHookResult = ReturnType<typeof useAddProjectStyleMutation>;
+export type AddProjectStyleMutationResult = Apollo.MutationResult<AddProjectStyleMutation>;
+export type AddProjectStyleMutationOptions = Apollo.BaseMutationOptions<AddProjectStyleMutation, AddProjectStyleMutationVariables>;
 export const WelcomeScreenSignInWithExternalAccountDocument = gql`
     mutation WelcomeScreenSignInWithExternalAccount($input: SignInWithExternalAccountInput!) {
   signInWithExternalAccount(input: $input) {
