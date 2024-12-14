@@ -18,10 +18,10 @@ import {
   ApolloProvider,
   InMemoryCache,
   ApolloLink,
-  createHttpLink,
   FetchResult,
   Observable,
 } from "@apollo/client";
+import { createUploadLink } from "apollo-upload-client";
 import { Platform } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -35,7 +35,7 @@ export default function RootLayout() {
   });
 
   const [client] = useState(() => {
-    const httpLink = createHttpLink({
+    const uploadLink = createUploadLink({
       uri: "http://localhost:3000/graphql",
     });
 
@@ -71,7 +71,7 @@ export default function RootLayout() {
     });
 
     return new ApolloClient({
-      link: authLink.concat(httpLink),
+      link: authLink.concat(uploadLink),
       cache: new InMemoryCache(),
       defaultOptions: {
         watchQuery: {

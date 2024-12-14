@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import UploadImageButton from "@/components/imagesUpload/uploadImageButton";
 import UploadedImages from "@/components/imagesUpload/uploadedImages";
 import PrimaryButton from "@/components/common/primaryButton";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 const ImagesUpload = () => {
   const images = [
     { id: "1", uri: "https://picsum.photos/200/300" },
@@ -16,7 +16,7 @@ const ImagesUpload = () => {
   ];
 
   const router = useRouter();
-
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>

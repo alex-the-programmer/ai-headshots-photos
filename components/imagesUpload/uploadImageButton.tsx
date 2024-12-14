@@ -1,20 +1,36 @@
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { gql } from "@apollo/client";
+import { useUploadImageMutation } from "@/generated/graphql";
+import * as ImagePicker from "expo-image-picker";
 
 interface UploadImageButtonProps {
-  freeTriesCount?: number;
+  projectId: string;
 }
 
-const UploadImageButton = ({ freeTriesCount = 3 }: UploadImageButtonProps) => {
+const UploadImageButton = ({ projectId }: UploadImageButtonProps) => {
+  const [uploadImage, { loading }] = useUploadImageMutation();
+  const performUpload = async () => {
+    const image = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    await uploadImage({
+      variables: {
+        projectId,
+        image,
+        triggerProcessing: true,
+      },
+    });
+  };
   return (
     <View style={styles.uploadSection}>
-      <TouchableOpacity style={styles.uploadButton}>
+      <TouchableOpacity style={styles.uploadButton} onPress={performUpload}>
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
       <Text style={styles.uploadText}>Upload Image</Text>
-      <Text style={styles.freeTriesText}>
-        You have {freeTriesCount} free tries
-      </Text>
     </View>
   );
 };
@@ -55,3 +71,25 @@ const styles = StyleSheet.create({
 });
 
 export default UploadImageButton;
+
+export const UPLOAD_IMAGE_MUTATION = gql`
+  mutation UploadImage(
+    $projectId: ID!
+    $image: Upload!
+    $triggerProcessing: Boolean!
+  ) {
+    uploadProjectImage(
+      input: {
+        projectId: $projectId
+        image: $image
+        triggerProcessing: $triggerProcessing
+      }
+    ) {
+      project {
+        id
+      }
+    }
+  }
+`;
+
+//  ...projectUploadImagePage on project

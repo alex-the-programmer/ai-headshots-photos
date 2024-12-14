@@ -831,6 +831,15 @@ export type StylesSelectionPageQueryVariables = Exact<{
 
 export type StylesSelectionPageQuery = { __typename?: 'Query', availableStyles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string, name: string, logo: string }> }, availableProperties: { __typename?: 'PropertyConnection', nodes: Array<{ __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } }> }, currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, subtotal: number, package?: { __typename?: 'Package', id: string, name: string, stylesCount: number } | null, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } }> } }> } } } | null };
 
+export type UploadImageMutationVariables = Exact<{
+  projectId: Scalars['ID']['input'];
+  image: Scalars['Upload']['input'];
+  triggerProcessing: Scalars['Boolean']['input'];
+}>;
+
+
+export type UploadImageMutation = { __typename?: 'Mutation', uploadProjectImage?: { __typename?: 'UploadProjectImagePayload', project: { __typename?: 'Project', id: string } } | null };
+
 export type ChoosePackageMutationVariables = Exact<{
   projectId: Scalars['ID']['input'];
   packageId: Scalars['ID']['input'];
@@ -1148,6 +1157,45 @@ export type StylesSelectionPageQueryHookResult = ReturnType<typeof useStylesSele
 export type StylesSelectionPageLazyQueryHookResult = ReturnType<typeof useStylesSelectionPageLazyQuery>;
 export type StylesSelectionPageSuspenseQueryHookResult = ReturnType<typeof useStylesSelectionPageSuspenseQuery>;
 export type StylesSelectionPageQueryResult = Apollo.QueryResult<StylesSelectionPageQuery, StylesSelectionPageQueryVariables>;
+export const UploadImageDocument = gql`
+    mutation UploadImage($projectId: ID!, $image: Upload!, $triggerProcessing: Boolean!) {
+  uploadProjectImage(
+    input: {projectId: $projectId, image: $image, triggerProcessing: $triggerProcessing}
+  ) {
+    project {
+      id
+    }
+  }
+}
+    `;
+export type UploadImageMutationFn = Apollo.MutationFunction<UploadImageMutation, UploadImageMutationVariables>;
+
+/**
+ * __useUploadImageMutation__
+ *
+ * To run a mutation, you first call `useUploadImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadImageMutation, { data, loading, error }] = useUploadImageMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      image: // value for 'image'
+ *      triggerProcessing: // value for 'triggerProcessing'
+ *   },
+ * });
+ */
+export function useUploadImageMutation(baseOptions?: Apollo.MutationHookOptions<UploadImageMutation, UploadImageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadImageMutation, UploadImageMutationVariables>(UploadImageDocument, options);
+      }
+export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
+export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
+export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
 export const ChoosePackageDocument = gql`
     mutation ChoosePackage($projectId: ID!, $packageId: ID!) {
   choosePackage(input: {projectId: $projectId, packageId: $packageId}) {
