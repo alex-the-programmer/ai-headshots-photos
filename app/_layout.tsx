@@ -46,6 +46,7 @@ export default function RootLayout() {
         Promise.resolve(AsyncStorage.getItem("session"))
           .then((session) => {
             const sessionData = JSON.parse(session || "{}");
+            console.log("before request", sessionData);
             operation.setContext({
               headers: {
                 userSession: sessionData.jwtToken || "",

@@ -17,6 +17,7 @@ export default function WelcomeScreen() {
 
   React.useEffect(() => {
     const checkSession = async () => {
+      await AsyncStorage.clear(); // todo remove this once we have a list of projects.
       const sessionToken = await AsyncStorage.getItem("session");
       setHasSession(!!sessionToken);
     };
@@ -82,16 +83,3 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
 });
-
-const WELCOME_SCREEN_SIGN_IN_MUTATION = gql`
-  mutation WelcomeScreenSignInWithExternalAccount(
-    $input: SignInWithExternalAccountInput!
-  ) {
-    signInWithExternalAccount(input: $input) {
-      clientMutationId
-      userAuthentication {
-        jwtToken
-      }
-    }
-  }
-`;

@@ -1,7 +1,13 @@
 import { PackageCardFragment } from "@/generated/graphql";
 import PackageCardInternal from "./packageCardInternal";
 
-const PackageCard = ({ packageNode }: { packageNode: PackageCardFragment }) => {
+const PackageCard = ({
+  packageNode,
+  projectId,
+}: {
+  packageNode: PackageCardFragment;
+  projectId: string;
+}) => {
   const onPress = () => {
     console.log("onPress");
   };

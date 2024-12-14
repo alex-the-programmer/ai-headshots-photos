@@ -46,12 +46,15 @@ const SignInButton = () => {
           // Store both user info and JWT token
           console.log("signInResult", signInResult);
           await AsyncStorage.setItem("session", "bla");
+          return true;
         }
       } else {
         console.log("Google Sign in cancelled or failed");
+        return false;
       }
     } catch (e) {
       console.error("Google Sign in error:", e);
+      return false;
     }
   };
   return <SignInButtonInternal handlePress={handlePressAndroid} />;

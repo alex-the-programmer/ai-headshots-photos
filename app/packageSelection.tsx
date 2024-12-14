@@ -13,8 +13,11 @@ import { useRouter } from "expo-router";
 import { gql, useQuery } from "@apollo/client";
 import { usePackageSelectionPageQuery } from "@/generated/graphql";
 import Loading from "@/components/common/loading";
+import { useLocalSearchParams } from "expo-router";
 
 const PackageSelectionScreen = () => {
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
+
   const {
     data: packageList,
     loading: packageListLoading,
@@ -58,7 +61,7 @@ const PackageSelectionScreen = () => {
         <FlatList
           data={packageList?.availablePackages?.nodes}
           renderItem={({ item }) => (
-            <PackageCard key={item.id} packageNode={item} />
+            <PackageCard key={item.id} packageNode={item} projectId={projectId} />
           )}
           keyExtractor={(item) => item.id}
           style={styles.plansContainer}

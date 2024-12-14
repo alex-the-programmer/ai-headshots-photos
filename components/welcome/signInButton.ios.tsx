@@ -5,10 +5,8 @@ import {
 import * as AppleAuthentication from "expo-apple-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignInButtonInternal from "./signInButtonInternal";
-import { useRouter } from "expo-router";
 
 const SignInButton = () => {
-  const router = useRouter();
   const [signInWithExternalAccount] =
     useWelcomeScreenSignInWithExternalAccountMutation();
   const handlePress = async () => {
@@ -34,13 +32,14 @@ const SignInButton = () => {
           accountId: credential.user,
         })
       );
-      router.push("/packageSelection");
+      return true;
     } catch (e: any) {
       if (e.code === "ERR_CANCELED") {
         console.log("User canceled Apple Sign in");
       } else {
         console.error("Apple Sign in error:", e);
       }
+      return false;
     }
   };
   return <SignInButtonInternal handlePress={handlePress} />;

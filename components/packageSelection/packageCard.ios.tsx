@@ -1,17 +1,34 @@
-import { PackageCardFragment } from "@/generated/graphql";
+import {
+  PackageCardFragment,
+  useChoosePackageMutation,
+} from "@/generated/graphql";
 import PackageCardInternal from "./packageCardInternal";
 
 import Constants from "expo-constants";
-import { errorCodes } from "@apollo/client/invariantErrorCodes";
+import { gql } from "@apollo/client";
 
-const PackageCard = ({ packageNode }: { packageNode: PackageCardFragment }) => {
+const PackageCard = ({
+  packageNode,
+  projectId,
+}: {
+  packageNode: PackageCardFragment;
+  projectId: string;
+}) => {
+  console.log("inside package card", projectId);
+  const [choosePackage] = useChoosePackageMutation();
   const onPress = async () => {
     if (Constants.appOwnership === "expo") {
-      return false; // todo handle expo fallback
+      await choosePackage({
+        variables: {
+          projectId: projectId,
+          packageId: packageNode.id,
+        },
+      });
+      return;
     }
     const InAppPurchases = await import("expo-in-app-purchases");
     await InAppPurchases.connectAsync();
-    await InAppPurchases.purchaseItemAsync(packageNode.appleProductId);
+    InAppPurchases.purchaseItemAsync(packageNode.appleProductId);
 
     return await new Promise((resolve, reject) => {
       InAppPurchases.setPurchaseListener(
@@ -39,3 +56,13 @@ const PackageCard = ({ packageNode }: { packageNode: PackageCardFragment }) => {
 };
 
 export default PackageCard;
+
+export const CHOOSE_PACKAGE_MUTATION = gql`
+  mutation ChoosePackage($projectId: ID!, $packageId: ID!) {
+    choosePackage(input: { projectId: $projectId, packageId: $packageId }) {
+      project {
+        id
+      }
+    }
+  }
+`;
