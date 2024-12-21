@@ -25,15 +25,13 @@ const GenderSelection = () => {
       .find((property) => property.name === "Gender")
       ?.propertyValues.nodes.find((value) => value.name === gender);
 
-    console.log("genderPropertyValue", genderSelectorData);
-
     await updateProjectPropertyValue({
       variables: {
         projectId: projectId,
         propertyValueId: genderPropertyValue?.id ?? "",
       },
     });
-
+    console.log("genderProjectId", projectId);
     router.push({
       pathname: "/imagesUpload",
       params: {

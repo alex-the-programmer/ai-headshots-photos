@@ -3,34 +3,79 @@ import { Ionicons } from "@expo/vector-icons";
 import { gql } from "@apollo/client";
 import { useUploadImageMutation } from "@/generated/graphql";
 import * as ImagePicker from "expo-image-picker";
+import { useLocalSearchParams } from "expo-router";
 
 interface UploadImageButtonProps {
   projectId: string;
 }
 
-const UploadImageButton = ({ projectId }: UploadImageButtonProps) => {
+const UploadImageButton = () => {
   const [uploadImage, { loading }] = useUploadImageMutation();
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
+
   const performUpload = async () => {
-    const image = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    await uploadImage({
-      variables: {
-        projectId,
-        image,
-        triggerProcessing: true,
-      },
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 0.8,
+        allowsMultipleSelection: true,
+        base64: false,
+        exif: false,
+      });
+
+      console.log("Picker result:", result);
+
+      if (!result.canceled && result.assets.length > 0) {
+        for (const asset of result.assets) {
+          try {
+            const imageFile = {
+              uri: asset.uri,
+              type: "image/jpeg",
+              name: `image-${Date.now()}.jpg`,
+              size: asset.fileSize || 0,
+              lastModified: Date.now(),
+            };
+
+            console.log("Uploading file:", imageFile);
+
+            const response = await uploadImage({
+              variables: {
+                projectId,
+                image: imageFile,
+                triggerProcessing: true,
+              },
+              context: {
+                headers: {
+                  "Apollo-Require-Preflight": "true",
+                  "Content-Type": "multipart/form-data",
+                },
+              },
+            });
+
+            console.log("Upload response:", response);
+          } catch (error) {
+            console.error(`Failed to upload image:`, error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error(`Error picking images:`, error);
+    }
   };
+
   return (
     <View style={styles.uploadSection}>
-      <TouchableOpacity style={styles.uploadButton} onPress={performUpload}>
+      <TouchableOpacity
+        style={[styles.uploadButton, loading && styles.uploadButtonDisabled]}
+        onPress={performUpload}
+        disabled={loading}
+      >
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
-      <Text style={styles.uploadText}>Upload Image</Text>
+      <Text style={styles.uploadText}>
+        {loading ? "Uploading..." : "Upload Images"}
+      </Text>
     </View>
   );
 };
@@ -57,6 +102,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.7,
     shadowRadius: 16,
     elevation: 8,
+  },
+  uploadButtonDisabled: {
+    opacity: 0.5,
   },
   uploadText: {
     color: "white",

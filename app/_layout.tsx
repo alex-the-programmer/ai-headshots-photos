@@ -37,6 +37,27 @@ export default function RootLayout() {
   const [client] = useState(() => {
     const uploadLink = createUploadLink({
       uri: "http://localhost:3000/graphql",
+      headers: {
+        "Apollo-Require-Preflight": "true",
+      },
+      formDataAppendFile: (formData: FormData, name: string, file: any) => {
+        // @ts-ignore
+        formData.append(name, {
+          uri: file.uri,
+          type: file.type || "image/jpeg",
+          name: file.name,
+        });
+      },
+      includeExtensions: true,
+      isExtractableFile: (value: any) => {
+        return (
+          value !== null &&
+          typeof value === "object" &&
+          "uri" in value &&
+          "type" in value &&
+          "name" in value
+        );
+      },
     });
 
     // Create a custom link that adds the session header
