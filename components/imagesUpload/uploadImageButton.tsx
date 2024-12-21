@@ -135,9 +135,8 @@ export const UPLOAD_IMAGE_MUTATION = gql`
     ) {
       project {
         id
+        ...projectUploadImagePage
       }
     }
   }
 `;
-
-//  ...projectUploadImagePage on project

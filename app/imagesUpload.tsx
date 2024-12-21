@@ -3,20 +3,19 @@ import UploadImageButton from "@/components/imagesUpload/uploadImageButton";
 import UploadedImages from "@/components/imagesUpload/uploadedImages";
 import PrimaryButton from "@/components/common/primaryButton";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { gql } from "@apollo/client";
+import { useImagesUploadPageQuery } from "@/generated/graphql";
 const ImagesUpload = () => {
-  const images = [
-    { id: "1", uri: "https://picsum.photos/200/300" },
-    { id: "2", uri: "https://picsum.photos/200/300" },
-    { id: "3", uri: "https://picsum.photos/200/300" },
-    { id: "4", uri: "https://picsum.photos/200/300" },
-    { id: "5", uri: "https://picsum.photos/200/300" },
-    { id: "6", uri: "https://picsum.photos/200/300" },
-    { id: "7", uri: "https://picsum.photos/200/300" },
-    { id: "8", uri: "https://picsum.photos/200/300" },
-  ];
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
+  const { data: imagesUploadPageData } = useImagesUploadPageQuery({
+    variables: {
+      projectId: projectId,
+      correctionMode: false,
+    },
+  });
 
   const router = useRouter();
-  const { projectId } = useLocalSearchParams<{ projectId: string }>();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -28,8 +27,12 @@ const ImagesUpload = () => {
           </Text>
         </View>
 
-        <UploadImageButton freeTriesCount={3} />
-        <UploadedImages images={images} />
+        <UploadImageButton />
+        <UploadedImages
+          images={
+            imagesUploadPageData?.currentUser?.project?.inputImages?.nodes ?? []
+          }
+        />
         <View style={styles.buttonContainer}>
           <PrimaryButton
             text="Next"
@@ -76,3 +79,45 @@ const styles = StyleSheet.create({
 });
 
 export default ImagesUpload;
+
+export const QUERY_IMAGES_UPLOAD_PAGE = gql`
+  query ImagesUploadPage($correctionMode: Boolean!, $projectId: ID!) {
+    currentUser {
+      id
+      project(projectId: $projectId) {
+        id
+        hasInvalidImages @include(if: $correctionMode)
+        hasImageProcessingErrors @include(if: $correctionMode)
+        styles {
+          nodes {
+            id
+          }
+        }
+        inputImages {
+          nodes {
+            ...inputImageUploadImagePage
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const FRAGMENT_PROJECT_UPLOAD_IMAGE_PAGE = gql`
+  fragment projectUploadImagePage on Project {
+    id
+    inputImages {
+      nodes {
+        ...inputImageUploadImagePage
+      }
+    }
+  }
+`;
+
+export const FRAGMENT_INPUT_IMAGE_UPLOAD_IMAGE_PAGE = gql`
+  fragment inputImageUploadImagePage on InputImage {
+    id
+    url
+    processingStatus
+  }
+`;

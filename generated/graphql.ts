@@ -819,6 +819,18 @@ export type UpdateProjectPropertyValueMutationVariables = Exact<{
 
 export type UpdateProjectPropertyValueMutation = { __typename?: 'Mutation', updateProjectPropertyValue?: { __typename?: 'UpdateProjectPropertyValuePayload', project: { __typename?: 'Project', id: string, genderPropertyValue?: { __typename?: 'PropertyValue', id: string } | null } } | null };
 
+export type ImagesUploadPageQueryVariables = Exact<{
+  correctionMode: Scalars['Boolean']['input'];
+  projectId: Scalars['ID']['input'];
+}>;
+
+
+export type ImagesUploadPageQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, hasInvalidImages?: boolean, hasImageProcessingErrors?: boolean, styles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string }> }, inputImages: { __typename?: 'InputImageConnection', nodes: Array<{ __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum }> } } } | null };
+
+export type ProjectUploadImagePageFragment = { __typename?: 'Project', id: string, inputImages: { __typename?: 'InputImageConnection', nodes: Array<{ __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum }> } };
+
+export type InputImageUploadImagePageFragment = { __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum };
+
 export type PackageSelectionPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -838,7 +850,7 @@ export type UploadImageMutationVariables = Exact<{
 }>;
 
 
-export type UploadImageMutation = { __typename?: 'Mutation', uploadProjectImage?: { __typename?: 'UploadProjectImagePayload', project: { __typename?: 'Project', id: string } } | null };
+export type UploadImageMutation = { __typename?: 'Mutation', uploadProjectImage?: { __typename?: 'UploadProjectImagePayload', project: { __typename?: 'Project', id: string, inputImages: { __typename?: 'InputImageConnection', nodes: Array<{ __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum }> } } } | null };
 
 export type ChoosePackageMutationVariables = Exact<{
   projectId: Scalars['ID']['input'];
@@ -893,6 +905,23 @@ export type CreateProjectMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project: { __typename?: 'Project', id: string } } | null };
 
+export const InputImageUploadImagePageFragmentDoc = gql`
+    fragment inputImageUploadImagePage on InputImage {
+  id
+  url
+  processingStatus
+}
+    `;
+export const ProjectUploadImagePageFragmentDoc = gql`
+    fragment projectUploadImagePage on Project {
+  id
+  inputImages {
+    nodes {
+      ...inputImageUploadImagePage
+    }
+  }
+}
+    ${InputImageUploadImagePageFragmentDoc}`;
 export const PackageCardFragmentDoc = gql`
     fragment PackageCard on Package {
   id
@@ -1060,6 +1089,62 @@ export function useUpdateProjectPropertyValueMutation(baseOptions?: Apollo.Mutat
 export type UpdateProjectPropertyValueMutationHookResult = ReturnType<typeof useUpdateProjectPropertyValueMutation>;
 export type UpdateProjectPropertyValueMutationResult = Apollo.MutationResult<UpdateProjectPropertyValueMutation>;
 export type UpdateProjectPropertyValueMutationOptions = Apollo.BaseMutationOptions<UpdateProjectPropertyValueMutation, UpdateProjectPropertyValueMutationVariables>;
+export const ImagesUploadPageDocument = gql`
+    query ImagesUploadPage($correctionMode: Boolean!, $projectId: ID!) {
+  currentUser {
+    id
+    project(projectId: $projectId) {
+      id
+      hasInvalidImages @include(if: $correctionMode)
+      hasImageProcessingErrors @include(if: $correctionMode)
+      styles {
+        nodes {
+          id
+        }
+      }
+      inputImages {
+        nodes {
+          ...inputImageUploadImagePage
+        }
+      }
+    }
+  }
+}
+    ${InputImageUploadImagePageFragmentDoc}`;
+
+/**
+ * __useImagesUploadPageQuery__
+ *
+ * To run a query within a React component, call `useImagesUploadPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useImagesUploadPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useImagesUploadPageQuery({
+ *   variables: {
+ *      correctionMode: // value for 'correctionMode'
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useImagesUploadPageQuery(baseOptions: Apollo.QueryHookOptions<ImagesUploadPageQuery, ImagesUploadPageQueryVariables> & ({ variables: ImagesUploadPageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ImagesUploadPageQuery, ImagesUploadPageQueryVariables>(ImagesUploadPageDocument, options);
+      }
+export function useImagesUploadPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ImagesUploadPageQuery, ImagesUploadPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ImagesUploadPageQuery, ImagesUploadPageQueryVariables>(ImagesUploadPageDocument, options);
+        }
+export function useImagesUploadPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ImagesUploadPageQuery, ImagesUploadPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ImagesUploadPageQuery, ImagesUploadPageQueryVariables>(ImagesUploadPageDocument, options);
+        }
+export type ImagesUploadPageQueryHookResult = ReturnType<typeof useImagesUploadPageQuery>;
+export type ImagesUploadPageLazyQueryHookResult = ReturnType<typeof useImagesUploadPageLazyQuery>;
+export type ImagesUploadPageSuspenseQueryHookResult = ReturnType<typeof useImagesUploadPageSuspenseQuery>;
+export type ImagesUploadPageQueryResult = Apollo.QueryResult<ImagesUploadPageQuery, ImagesUploadPageQueryVariables>;
 export const PackageSelectionPageDocument = gql`
     query PackageSelectionPage {
   availablePackages {
@@ -1164,10 +1249,11 @@ export const UploadImageDocument = gql`
   ) {
     project {
       id
+      ...projectUploadImagePage
     }
   }
 }
-    `;
+    ${ProjectUploadImagePageFragmentDoc}`;
 export type UploadImageMutationFn = Apollo.MutationFunction<UploadImageMutation, UploadImageMutationVariables>;
 
 /**

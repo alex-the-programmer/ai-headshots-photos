@@ -1,22 +1,20 @@
 import { View, FlatList, Dimensions, StyleSheet } from "react-native";
 import UploadedImageCard from "./uploadedImageCard";
+import { InputImageUploadImagePageFragment } from "@/generated/graphql";
 
 const { width: screenWidth } = Dimensions.get("window");
 const imageWidth = (screenWidth - 60) / 2;
 
-interface Image {
-  id: string;
-  uri: string;
-}
-
 interface UploadedImagesProps {
-  images: Image[];
+  images: InputImageUploadImagePageFragment[];
 }
 
 const UploadedImages = ({ images }: UploadedImagesProps) => {
-  const renderItem = ({ item }: { item: Image }) => (
-    <UploadedImageCard imageUri={item.uri} onDelete={() => {}} />
-  );
+  const renderItem = ({
+    item,
+  }: {
+    item: InputImageUploadImagePageFragment;
+  }) => <UploadedImageCard imageUri={item.url} onDelete={() => {}} />;
 
   return (
     <FlatList
