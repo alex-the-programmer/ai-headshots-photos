@@ -15,7 +15,8 @@ const ImagesUpload = () => {
   });
 
   const router = useRouter();
-
+  const numberOfImages =
+    imagesUploadPageData?.currentUser?.project?.inputImages?.nodes?.length ?? 0;
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -34,8 +35,14 @@ const ImagesUpload = () => {
           }
         />
         <View style={styles.buttonContainer}>
+          {numberOfImages > 0 && numberOfImages < 10 && (
+            <Text style={styles.warningText}>
+              Please upload at least 10 photos
+            </Text>
+          )}
           <PrimaryButton
             text="Next"
+            disabled={numberOfImages <= 10}
             onPress={() => {
               router.push("/stylesSelection");
             }}
@@ -75,6 +82,12 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: "100%",
+    alignItems: "center",
+  },
+  warningText: {
+    color: "#ff6b6b",
+    fontSize: 14,
+    marginBottom: 10,
   },
 });
 
