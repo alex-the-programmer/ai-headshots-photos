@@ -14,7 +14,7 @@ const UploadedImages = ({ images }: UploadedImagesProps) => {
     item,
   }: {
     item: InputImageUploadImagePageFragment;
-  }) => <UploadedImageCard imageUri={item.url} onDelete={() => {}} />;
+  }) => <UploadedImageCard imageUri={item.url} imageId={item.id} />;
 
   return (
     <FlatList

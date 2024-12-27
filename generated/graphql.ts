@@ -852,6 +852,13 @@ export type UploadImageMutationVariables = Exact<{
 
 export type UploadImageMutation = { __typename?: 'Mutation', uploadProjectImage?: { __typename?: 'UploadProjectImagePayload', project: { __typename?: 'Project', id: string, inputImages: { __typename?: 'InputImageConnection', nodes: Array<{ __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum }> } } } | null };
 
+export type RemoveImageMutationVariables = Exact<{
+  imageId: Scalars['ID']['input'];
+}>;
+
+
+export type RemoveImageMutation = { __typename?: 'Mutation', removeProjectImage?: { __typename?: 'RemoveProjectImagePayload', project: { __typename?: 'Project', id: string, inputImages: { __typename?: 'InputImageConnection', nodes: Array<{ __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum }> } } } | null };
+
 export type ChoosePackageMutationVariables = Exact<{
   projectId: Scalars['ID']['input'];
   packageId: Scalars['ID']['input'];
@@ -1282,6 +1289,41 @@ export function useUploadImageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
 export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
 export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
+export const RemoveImageDocument = gql`
+    mutation RemoveImage($imageId: ID!) {
+  removeProjectImage(input: {imageId: $imageId}) {
+    project {
+      ...projectUploadImagePage
+    }
+  }
+}
+    ${ProjectUploadImagePageFragmentDoc}`;
+export type RemoveImageMutationFn = Apollo.MutationFunction<RemoveImageMutation, RemoveImageMutationVariables>;
+
+/**
+ * __useRemoveImageMutation__
+ *
+ * To run a mutation, you first call `useRemoveImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeImageMutation, { data, loading, error }] = useRemoveImageMutation({
+ *   variables: {
+ *      imageId: // value for 'imageId'
+ *   },
+ * });
+ */
+export function useRemoveImageMutation(baseOptions?: Apollo.MutationHookOptions<RemoveImageMutation, RemoveImageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveImageMutation, RemoveImageMutationVariables>(RemoveImageDocument, options);
+      }
+export type RemoveImageMutationHookResult = ReturnType<typeof useRemoveImageMutation>;
+export type RemoveImageMutationResult = Apollo.MutationResult<RemoveImageMutation>;
+export type RemoveImageMutationOptions = Apollo.BaseMutationOptions<RemoveImageMutation, RemoveImageMutationVariables>;
 export const ChoosePackageDocument = gql`
     mutation ChoosePackage($projectId: ID!, $packageId: ID!) {
   choosePackage(input: {projectId: $projectId, packageId: $packageId}) {

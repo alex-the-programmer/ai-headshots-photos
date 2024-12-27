@@ -7,16 +7,24 @@ import {
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { gql } from "@apollo/client";
+import { useRemoveImageMutation } from "@/generated/graphql";
 
 interface UploadedImageCardProps {
   imageUri: string;
-  onDelete: () => void;
+  imageId: string;
 }
 
 const { width: screenWidth } = Dimensions.get("window");
 const imageWidth = (screenWidth - 60) / 2;
 
-const UploadedImageCard = ({ imageUri, onDelete }: UploadedImageCardProps) => {
+const UploadedImageCard = ({ imageUri, imageId }: UploadedImageCardProps) => {
+  const [removeImage] = useRemoveImageMutation();
+
+  const handleDelete = async () => {
+    await removeImage({ variables: { imageId: imageId } });
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -24,7 +32,7 @@ const UploadedImageCard = ({ imageUri, onDelete }: UploadedImageCardProps) => {
         style={styles.image}
         resizeMode="cover"
       />
-      <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
         <Ionicons name="trash-outline" size={20} color="#fff" />
         <Text style={styles.deleteText}>Delete Image</Text>
       </TouchableOpacity>
@@ -63,3 +71,13 @@ const styles = StyleSheet.create({
 });
 
 export default UploadedImageCard;
+
+export const REMOVE_IMAGE_MUTATION = gql`
+  mutation RemoveImage($imageId: ID!) {
+    removeProjectImage(input: { imageId: $imageId }) {
+      project {
+        ...projectUploadImagePage
+      }
+    }
+  }
+`;
