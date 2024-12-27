@@ -5,6 +5,10 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import { RootStackParamList } from "./projectStack";
+import { gql } from "@apollo/client";
+import ProjectCard from "@/components/projectsList/projectCard";
+import { ProjectCardFragment, useProjectsListQuery } from "@/generated/graphql";
+import Loading from "@/components/common/loading";
 
 type Project = {
   id: string;
@@ -12,63 +16,6 @@ type Project = {
   status: string;
   thumbnails: string[];
 };
-
-const projectsSample: Project[] = [
-  {
-    id: "1",
-    createdAt: "2021-01-01",
-    status: "pending",
-    thumbnails: [
-      "https://picsum.photos/150/150",
-      "https://picsum.photos/150/150",
-    ],
-  },
-  {
-    id: "2",
-    createdAt: "2021-01-02",
-    status: "pending",
-    thumbnails: [
-      "https://picsum.photos/150/150",
-      "https://picsum.photos/150/150",
-    ],
-  },
-  {
-    id: "3",
-    createdAt: "2021-01-03",
-    status: "pending",
-    thumbnails: [
-      "https://picsum.photos/150/150",
-      "https://picsum.photos/150/150",
-    ],
-  },
-  {
-    id: "4",
-    createdAt: "2021-01-04",
-    status: "pending",
-    thumbnails: [
-      "https://picsum.photos/150/150",
-      "https://picsum.photos/150/150",
-    ],
-  },
-  {
-    id: "5",
-    createdAt: "2021-01-05",
-    status: "pending",
-    thumbnails: [
-      "https://picsum.photos/150/150",
-      "https://picsum.photos/150/150",
-    ],
-  },
-  {
-    id: "6",
-    createdAt: "2021-01-06",
-    status: "pending",
-    thumbnails: [
-      "https://picsum.photos/150/150",
-      "https://picsum.photos/150/150",
-    ],
-  },
-];
 
 type ProjectsNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -78,40 +25,20 @@ type ProjectsListScreenProps = NativeStackScreenProps<
   "Projects"
 >;
 
-const ProjectCard = ({
-  project,
-  navigation,
-}: {
-  project: Project;
-  navigation: ProjectsNavigationProp;
-}) => {
-  const handlePress = () => {
-    console.log("navigation before navigating ", navigation);
-    navigation.navigate("Styles", {
-      projectId: "1",
-    });
-  };
-
-  return (
-    <IntoCard onPress={handlePress} thumbnails={project.thumbnails}>
-      <Text style={styles.whiteText}>{project.createdAt}</Text>
-      <Text style={styles.whiteText}>{project.status}</Text>
-    </IntoCard>
-  );
-};
-
 const ProjectsList = ({
   projects,
   navigation,
 }: {
-  projects: Project[];
+  projects: ProjectCardFragment[];
   navigation: ProjectsNavigationProp;
 }) => {
+  const { data: projectsListData, loading } = useProjectsListQuery();
+  if (loading) return <Loading />;
   return (
     <SafeAreaView style={styles.container}>
       <View>
         <FlatList
-          data={projects}
+          data={projectsListData?.currentUser?.projects?.nodes}
           renderItem={({ item }) => (
             <ProjectCard project={item} navigation={navigation} />
           )}
@@ -122,20 +49,25 @@ const ProjectsList = ({
   );
 };
 
-export default function ProjectsListScreen({
-  navigation,
-}: ProjectsListScreenProps) {
-  console.log("navigation", navigation);
-  return <ProjectsList projects={projectsSample} navigation={navigation} />;
-}
+export default ProjectsList;
 
 const styles = StyleSheet.create({
-  whiteText: {
-    color: "white",
-  },
   container: {
     flex: 1,
     padding: 16,
     backgroundColor: "#14142B",
   },
 });
+
+export const QUERY_PROJECTS_LIST = gql`
+  query ProjectsList {
+    currentUser {
+      id
+      projects {
+        nodes {
+          ...projectCard
+        }
+      }
+    }
+  }
+`;

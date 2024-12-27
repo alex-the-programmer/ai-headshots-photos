@@ -836,6 +836,11 @@ export type PackageSelectionPageQueryVariables = Exact<{ [key: string]: never; }
 
 export type PackageSelectionPageQuery = { __typename?: 'Query', availablePackages: { __typename?: 'PackageConnection', nodes: Array<{ __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string }> } };
 
+export type ProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProjectsListQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, projectPhotoUrl?: string | null, createdAt: any, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string }> }, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum }> } }> } } | null };
+
 export type StylesSelectionPageQueryVariables = Exact<{
   projectId: Scalars['ID']['input'];
 }>;
@@ -875,6 +880,8 @@ export type VerifyApplePaymentMutationVariables = Exact<{
 export type VerifyApplePaymentMutation = { __typename?: 'Mutation', verifyApplePayment?: { __typename?: 'VerifyApplePaymentPayload', order: { __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, package?: { __typename?: 'Package', id: string } | null } } | null };
 
 export type PackageCardFragment = { __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string };
+
+export type ProjectCardFragment = { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, projectPhotoUrl?: string | null, createdAt: any, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string }> }, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum }> } };
 
 export type CartProjectStyleFragment = { __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } };
 
@@ -940,6 +947,26 @@ export const PackageCardFragmentDoc = gql`
   badgeColor
   preselected
   appleProductId
+}
+    `;
+export const ProjectCardFragmentDoc = gql`
+    fragment projectCard on Project {
+  id
+  processingStatus
+  projectPhotoUrl
+  createdAt
+  projectStyles {
+    nodes {
+      id
+      nameWithProperties
+    }
+  }
+  orders {
+    nodes {
+      id
+      processingStatus
+    }
+  }
 }
     `;
 export const StyleStyleSelectionCardFragmentDoc = gql`
@@ -1193,6 +1220,50 @@ export type PackageSelectionPageQueryHookResult = ReturnType<typeof usePackageSe
 export type PackageSelectionPageLazyQueryHookResult = ReturnType<typeof usePackageSelectionPageLazyQuery>;
 export type PackageSelectionPageSuspenseQueryHookResult = ReturnType<typeof usePackageSelectionPageSuspenseQuery>;
 export type PackageSelectionPageQueryResult = Apollo.QueryResult<PackageSelectionPageQuery, PackageSelectionPageQueryVariables>;
+export const ProjectsListDocument = gql`
+    query ProjectsList {
+  currentUser {
+    id
+    projects {
+      nodes {
+        ...projectCard
+      }
+    }
+  }
+}
+    ${ProjectCardFragmentDoc}`;
+
+/**
+ * __useProjectsListQuery__
+ *
+ * To run a query within a React component, call `useProjectsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProjectsListQuery(baseOptions?: Apollo.QueryHookOptions<ProjectsListQuery, ProjectsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectsListQuery, ProjectsListQueryVariables>(ProjectsListDocument, options);
+      }
+export function useProjectsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectsListQuery, ProjectsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectsListQuery, ProjectsListQueryVariables>(ProjectsListDocument, options);
+        }
+export function useProjectsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProjectsListQuery, ProjectsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProjectsListQuery, ProjectsListQueryVariables>(ProjectsListDocument, options);
+        }
+export type ProjectsListQueryHookResult = ReturnType<typeof useProjectsListQuery>;
+export type ProjectsListLazyQueryHookResult = ReturnType<typeof useProjectsListLazyQuery>;
+export type ProjectsListSuspenseQueryHookResult = ReturnType<typeof useProjectsListSuspenseQuery>;
+export type ProjectsListQueryResult = Apollo.QueryResult<ProjectsListQuery, ProjectsListQueryVariables>;
 export const StylesSelectionPageDocument = gql`
     query StylesSelectionPage($projectId: ID!) {
   availableStyles {
