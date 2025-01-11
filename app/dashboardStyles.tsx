@@ -1,100 +1,33 @@
 import { View, FlatList, StyleSheet } from "react-native";
 import { Style } from "./projectStack";
 import StyleCard from "@/components/dashboard/styleCard";
+import { useLocalSearchParams } from "expo-router";
+import { gql } from "@apollo/client";
+import Loading from "@/components/common/loading";
+import {
+  DashboardStylesFragment,
+  useDashboardStylesQuery,
+} from "@/generated/graphql";
 
 const DashboardStyles = ({ navigation }) => {
-  // Mock data - replace with your actual data
-  const stylesList: Style[] = [
-    {
-      id: "1",
-      name: "Nature Background",
-      outfit: "T-shirt and shorts",
-      outfitColor: "Blue",
-      images: [
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-      ],
-      thumbnails: [
-        "https://picsum.photos/50/50",
-        "https://picsum.photos/50/50",
-      ],
-    },
-    {
-      id: "2",
-      name: "Casual Summer",
-      outfit: "T-shirt and shorts",
-      outfitColor: "Blue",
-      images: [
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-      ],
-      thumbnails: [
-        "https://picsum.photos/50/50",
-        "https://picsum.photos/50/50",
-      ],
-    },
-    {
-      id: "3",
-      name: "Beach",
-      outfit: "T-shirt and shorts",
-      outfitColor: "Blue",
-      images: [
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-      ],
-      thumbnails: [
-        "https://picsum.photos/50/50",
-        "https://picsum.photos/50/50",
-      ],
-    },
-    {
-      id: "4",
-      name: "City",
-      outfit: "T-shirt and shorts",
-      outfitColor: "Blue",
-      images: [
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-        "https://picsum.photos/500/500",
-      ],
-      thumbnails: [
-        "https://picsum.photos/50/50",
-        "https://picsum.photos/50/50",
-      ],
-    },
-    // Add more styles...
-  ];
-
-  const renderStyleItem = ({ item }: { item: Style }) => (
+  const renderStyleItem = ({ item }: { item: DashboardStylesFragment }) => (
     <StyleCard
       style={item}
       onPress={() => navigation.navigate("StyleImages", { style: item })}
     />
   );
 
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
+  const { data: dashboardStylesData, loading } = useDashboardStylesQuery({
+    variables: { projectId },
+  });
+
+  if (loading) return <Loading />;
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={stylesList}
+        data={dashboardStylesData?.currentUser?.project?.projectStyles?.nodes}
         renderItem={renderStyleItem}
         keyExtractor={(item) => item.id}
       />
@@ -111,3 +44,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#14142B",
   },
 });
+
+const QUERY_DASHBOARD_STYLES = gql`
+  query DashboardStyles($projectId: ID!) {
+    currentUser {
+      id
+      project(projectId: $projectId) {
+        id
+        projectStyles {
+          nodes {
+            ...dashboardStyles
+          }
+        }
+      }
+    }
+  }
+`;

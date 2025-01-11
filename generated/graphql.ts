@@ -806,6 +806,13 @@ export type VerifyStripeSessionPayload = {
   order: Order;
 };
 
+export type DashboardStylesQueryVariables = Exact<{
+  projectId: Scalars['ID']['input'];
+}>;
+
+
+export type DashboardStylesQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string, generatedImages: { __typename?: 'GeneratedImageConnection', nodes: Array<{ __typename?: 'GeneratedImage', id: string, originalUrl: string, thumbnailUrl: string }> } }> } } } | null };
+
 export type GenderSelectorQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -847,6 +854,8 @@ export type StylesSelectionPageQueryVariables = Exact<{
 
 
 export type StylesSelectionPageQuery = { __typename?: 'Query', availableStyles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string, name: string, logo: string }> }, availableProperties: { __typename?: 'PropertyConnection', nodes: Array<{ __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } }> }, currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, subtotal: number, package?: { __typename?: 'Package', id: string, name: string, stylesCount: number } | null, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } }> } }> } } } | null };
+
+export type DashboardStylesFragment = { __typename?: 'ProjectStyle', id: string, nameWithProperties: string, generatedImages: { __typename?: 'GeneratedImageConnection', nodes: Array<{ __typename?: 'GeneratedImage', id: string, originalUrl: string, thumbnailUrl: string }> } };
 
 export type UploadImageMutationVariables = Exact<{
   projectId: Scalars['ID']['input'];
@@ -936,6 +945,19 @@ export const ProjectUploadImagePageFragmentDoc = gql`
   }
 }
     ${InputImageUploadImagePageFragmentDoc}`;
+export const DashboardStylesFragmentDoc = gql`
+    fragment dashboardStyles on ProjectStyle {
+  id
+  nameWithProperties
+  generatedImages {
+    nodes {
+      id
+      originalUrl
+      thumbnailUrl
+    }
+  }
+}
+    `;
 export const PackageCardFragmentDoc = gql`
     fragment PackageCard on Package {
   id
@@ -1034,6 +1056,54 @@ export const PropertyStyleSelectionCardFragmentDoc = gql`
   }
 }
     `;
+export const DashboardStylesDocument = gql`
+    query DashboardStyles($projectId: ID!) {
+  currentUser {
+    id
+    project(projectId: $projectId) {
+      id
+      projectStyles {
+        nodes {
+          ...dashboardStyles
+        }
+      }
+    }
+  }
+}
+    ${DashboardStylesFragmentDoc}`;
+
+/**
+ * __useDashboardStylesQuery__
+ *
+ * To run a query within a React component, call `useDashboardStylesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardStylesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardStylesQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useDashboardStylesQuery(baseOptions: Apollo.QueryHookOptions<DashboardStylesQuery, DashboardStylesQueryVariables> & ({ variables: DashboardStylesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DashboardStylesQuery, DashboardStylesQueryVariables>(DashboardStylesDocument, options);
+      }
+export function useDashboardStylesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DashboardStylesQuery, DashboardStylesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DashboardStylesQuery, DashboardStylesQueryVariables>(DashboardStylesDocument, options);
+        }
+export function useDashboardStylesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DashboardStylesQuery, DashboardStylesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DashboardStylesQuery, DashboardStylesQueryVariables>(DashboardStylesDocument, options);
+        }
+export type DashboardStylesQueryHookResult = ReturnType<typeof useDashboardStylesQuery>;
+export type DashboardStylesLazyQueryHookResult = ReturnType<typeof useDashboardStylesLazyQuery>;
+export type DashboardStylesSuspenseQueryHookResult = ReturnType<typeof useDashboardStylesSuspenseQuery>;
+export type DashboardStylesQueryResult = Apollo.QueryResult<DashboardStylesQuery, DashboardStylesQueryVariables>;
 export const GenderSelectorDocument = gql`
     query GenderSelector {
   availableProperties(propertyType: FOR_PROJECT) {

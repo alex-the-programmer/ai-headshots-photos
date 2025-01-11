@@ -15,7 +15,7 @@ const ProjectCard = ({
   const handlePress = () => {
     console.log("navigation before navigating ", navigation);
     navigation.navigate("Styles", {
-      projectId: "1",
+      projectId: project.id,
     });
   };
   if (!project) return null;

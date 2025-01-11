@@ -3,6 +3,8 @@ import { View, Text, StyleSheet } from "react-native";
 import Card from "@/components/common/card";
 import CircularAvatar from "@/components/common/circularAvatar";
 import IntoCard from "../common/intoCard";
+import { DashboardStylesFragment } from "@/generated/graphql";
+import { gql } from "@apollo/client";
 
 type Style = {
   id: string;
@@ -14,20 +16,25 @@ type Style = {
 };
 
 type StyleCardProps = {
-  style: Style;
+  style: DashboardStylesFragment;
   onPress: () => void;
 };
 
-const StyleCardText = ({ style }: { style: Style }) => (
+const StyleCardText = ({ style }: { style: DashboardStylesFragment }) => (
   <>
-    <Text style={[styles.styleName, styles.whiteText]}>{style.name}</Text>
-    <Text style={styles.whiteText}>Outfit: {style.outfit}</Text>
-    <Text style={styles.whiteText}>Color: {style.outfitColor}</Text>
+    <Text style={[styles.styleName, styles.whiteText]}>
+      {style.nameWithProperties}
+    </Text>
   </>
 );
 
 export const StyleCard = ({ style, onPress }: StyleCardProps) => (
-  <IntoCard onPress={onPress} thumbnails={style.thumbnails}>
+  <IntoCard
+    onPress={onPress}
+    thumbnails={
+      style.generatedImages?.nodes?.map((image) => image.thumbnailUrl) || []
+    }
+  >
     <StyleCardText style={style} />
   </IntoCard>
 );
@@ -44,3 +51,17 @@ const styles = StyleSheet.create({
 });
 
 export default StyleCard;
+
+const DASHBOARD_STYLES_FRAGMENT = gql`
+  fragment dashboardStyles on ProjectStyle {
+    id
+    nameWithProperties
+    generatedImages {
+      nodes {
+        id
+        originalUrl
+        thumbnailUrl
+      }
+    }
+  }
+`;
