@@ -32,7 +32,9 @@ export const StyleCard = ({ style, onPress }: StyleCardProps) => (
   <IntoCard
     onPress={onPress}
     thumbnails={
-      style.generatedImages?.nodes?.map((image) => image.thumbnailUrl) || []
+      style.generatedImages?.nodes
+        ?.map((image) => image.thumbnailUrl)
+        .slice(0, 2) || []
     }
   >
     <StyleCardText style={style} />
