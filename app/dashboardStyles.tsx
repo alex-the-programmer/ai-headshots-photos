@@ -8,8 +8,19 @@ import {
   DashboardStylesFragment,
   useDashboardStylesQuery,
 } from "@/generated/graphql";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-const DashboardStyles = ({ navigation }) => {
+type RootStackParamList = {
+  StyleImages: {
+    style: DashboardStylesFragment;
+  };
+};
+
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+};
+
+const DashboardStyles = ({ navigation }: Props) => {
   const renderStyleItem = ({ item }: { item: DashboardStylesFragment }) => (
     <StyleCard
       style={item}

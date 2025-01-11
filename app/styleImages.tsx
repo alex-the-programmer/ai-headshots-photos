@@ -1,22 +1,32 @@
 import { View, Text, FlatList, StyleSheet, Image } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { DashboardStylesFragment } from "@/generated/graphql";
 
-const StyleImagesScreen = ({ route }) => {
+type RootStackParamList = {
+  StyleImages: {
+    style: DashboardStylesFragment;
+  };
+};
+
+type Props = NativeStackScreenProps<RootStackParamList, "StyleImages">;
+
+const StyleImagesScreen = ({ route }: Props) => {
   const { style } = route.params;
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={style.images}
+        data={style.generatedImages?.nodes}
         renderItem={({ item }) => (
           <View style={styles.imageContainer}>
             <Image
-              source={{ uri: item }}
+              source={{ uri: item.originalUrl }}
               style={styles.image}
               resizeMode="cover"
             />
           </View>
         )}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}
       />
