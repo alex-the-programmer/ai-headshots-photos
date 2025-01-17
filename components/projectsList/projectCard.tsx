@@ -2,7 +2,10 @@ import { ProjectsNavigationProp } from "@/types/navigation";
 import { Text, StyleSheet } from "react-native";
 import IntoCard from "@/components/common/intoCard";
 import { gql } from "@apollo/client";
-import { ProjectCardFragment } from "@/generated/graphql";
+import {
+  ProjectCardFragment,
+  ProjectProcessingStatusEnum,
+} from "@/generated/graphql";
 import dayjs from "dayjs";
 
 const ProjectCard = ({
@@ -12,18 +15,27 @@ const ProjectCard = ({
   project: ProjectCardFragment;
   navigation: ProjectsNavigationProp;
 }) => {
+  const isClickable = [
+    ProjectProcessingStatusEnum.AllImagesGenerated,
+    ProjectProcessingStatusEnum.HasInvalidImages,
+  ].includes(project.processingStatus as ProjectProcessingStatusEnum);
+
   const handlePress = () => {
+    if (!isClickable) return;
+
     console.log("navigation before navigating ", navigation);
     navigation.navigate("Styles", {
       projectId: project.id,
     });
   };
+
   if (!project) return null;
 
   return (
     <IntoCard
       onPress={handlePress}
       thumbnails={[project.projectPhotoUrl || ""]}
+      disabled={!isClickable}
     >
       <Text style={styles.whiteText}>
         {dayjs(project.createdAt).format("MM/DD/YYYY")}

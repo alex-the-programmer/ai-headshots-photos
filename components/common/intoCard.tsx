@@ -7,13 +7,15 @@ const IntoCard = ({
   onPress,
   children,
   thumbnails,
+  disabled,
 }: {
   onPress: () => void;
   children: React.ReactNode;
   thumbnails: string[];
+  disabled?: boolean;
 }) => {
   return (
-    <Card onPress={onPress} style={styles.cardMargin}>
+    <Card onPress={onPress} style={styles.cardMargin} disabled={disabled}>
       <View style={styles.cardContent}>
         <View style={styles.textContainer}>{children}</View>
         <View style={styles.thumbnailsContainer}>

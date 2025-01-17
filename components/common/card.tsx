@@ -1,15 +1,20 @@
-import { TouchableOpacity, StyleSheet, ViewStyle } from "react-native";
+import { TouchableOpacity, StyleSheet, ViewStyle, View } from "react-native";
 import type { StyleProp } from "react-native";
 
 const Card = ({
   children,
   onPress,
   style,
+  disabled,
 }: {
   children: React.ReactNode;
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 }) => {
+  if (disabled) {
+    return <View style={[styles.planCard, style ?? {}]}>{children}</View>;
+  }
   return (
     <TouchableOpacity style={[styles.planCard, style ?? {}]} onPress={onPress}>
       {children}

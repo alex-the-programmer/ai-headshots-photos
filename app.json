@@ -12,7 +12,11 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.aiheadshots.app",
       "infoPlist": {
-        "SKAdNetworkItems": [{ "SKAdNetworkIdentifier": "xxxxxx" }]
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "xxxxxx"
+          }
+        ]
       }
     },
     "android": {
@@ -46,6 +50,14 @@
       "image": "./assets/images/splash-screen.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0870b65f-6995-427f-b8d8-52d849e0125e"
+      }
     }
   }
 }
