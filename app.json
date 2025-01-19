@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aiheadshots.app",
+      "bundleIdentifier": "com.aiheadshotphotos.app",
       "infoPlist": {
         "SKAdNetworkItems": [
           {
