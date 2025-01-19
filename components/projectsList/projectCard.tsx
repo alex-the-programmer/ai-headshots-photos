@@ -5,6 +5,7 @@ import { gql } from "@apollo/client";
 import {
   ProjectCardFragment,
   ProjectProcessingStatusEnum,
+  OrderProcessingStatusEnum,
 } from "@/generated/graphql";
 import dayjs from "dayjs";
 
@@ -31,6 +32,22 @@ const ProjectCard = ({
 
   if (!project) return null;
 
+  const getStatusText = () => {
+    if (
+      project.processingStatus === ProjectProcessingStatusEnum.Created &&
+      project.orders.nodes.length > 0
+    ) {
+      const orderStatus = project.orders.nodes[0].processingStatus;
+      if (orderStatus === OrderProcessingStatusEnum.PaymentProcessed) {
+        return "Payment processed";
+      }
+      if (orderStatus === OrderProcessingStatusEnum.PaymentProcessingError) {
+        return "Payment processing error";
+      }
+    }
+    return project.processingStatus;
+  };
+
   return (
     <IntoCard
       onPress={handlePress}
@@ -40,7 +57,7 @@ const ProjectCard = ({
       <Text style={styles.whiteText}>
         {dayjs(project.createdAt).format("MM/DD/YYYY")}
       </Text>
-      <Text style={styles.whiteText}>{project.processingStatus}</Text>
+      <Text style={styles.whiteText}>{getStatusText()}</Text>
     </IntoCard>
   );
 };
