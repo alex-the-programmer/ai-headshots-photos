@@ -16,6 +16,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "127574720",
+        "appleId": "AlexTheProgrammer@gmail.com",
+        "appleTeamId": "AC7R3PKJVG"
+      }
+    }
   }
 }
