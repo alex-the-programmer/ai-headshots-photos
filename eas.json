@@ -6,28 +6,13 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "extra": {
-        "eas": {
-          "buildType": "development"
-        }
-      }
+      "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal",
-      "extra": {
-        "eas": {
-          "buildType": "preview"
-        }
-      }
+      "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true,
-      "extra": {
-        "eas": {
-          "buildType": "production"
-        }
-      }
+      "autoIncrement": true
     }
   },
   "submit": {

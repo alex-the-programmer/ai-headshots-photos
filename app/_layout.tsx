@@ -37,7 +37,7 @@ export default function RootLayout() {
 
   const [client] = useState(() => {
     let apiUrl;
-    const buildType = Constants.expoConfig?.extra?.eas?.buildType;
+    const buildType: string = "development";
 
     switch (buildType) {
       case "production":
