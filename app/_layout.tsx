@@ -23,6 +23,7 @@ import {
 } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
 import { Platform } from "react-native";
+import Constants from "expo-constants";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -35,8 +36,19 @@ export default function RootLayout() {
   });
 
   const [client] = useState(() => {
+    let apiUrl;
+    switch (Constants.manifest.releaseChannel) {
+      case "production":
+        apiUrl = "https://apis.aiheadshotphotos.com/graphql";
+        break;
+      case "development":
+        apiUrl = "https://ai-photo-gen-dev-b690bba115b5.herokuapp.com/graphql";
+        break;
+      default:
+        apiUrl = "http://localhost:3000/graphql";
+    }
     const uploadLink = createUploadLink({
-      uri: "http://localhost:3000/graphql",
+      uri: apiUrl,
       headers: {
         "Apollo-Require-Preflight": "true",
       },
