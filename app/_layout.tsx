@@ -37,10 +37,13 @@ export default function RootLayout() {
 
   const [client] = useState(() => {
     let apiUrl;
-    switch (Constants.manifest.releaseChannel) {
+    const buildType = Constants.expoConfig?.extra?.eas?.buildType;
+
+    switch (buildType) {
       case "production":
         apiUrl = "https://apis.aiheadshotphotos.com/graphql";
         break;
+      case "preview":
       case "development":
         apiUrl = "https://ai-photo-gen-dev-b690bba115b5.herokuapp.com/graphql";
         break;

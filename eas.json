@@ -7,15 +7,27 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development"
+      "extra": {
+        "eas": {
+          "buildType": "development"
+        }
+      }
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview"
+      "extra": {
+        "eas": {
+          "buildType": "preview"
+        }
+      }
     },
     "production": {
       "autoIncrement": true,
-      "channel": "production"
+      "extra": {
+        "eas": {
+          "buildType": "production"
+        }
+      }
     }
   },
   "submit": {
