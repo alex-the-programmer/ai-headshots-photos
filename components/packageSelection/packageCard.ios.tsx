@@ -76,6 +76,24 @@ const PackageCard = ({
       const InAppPurchases = await import("expo-in-app-purchases");
       await InAppPurchases.connectAsync();
 
+      // First, get the product from the store
+      console.log("PackageCard: Querying product details from store");
+      const { responseCode, results } = await InAppPurchases.getProductsAsync([
+        packageNode.appleProductId,
+      ]);
+
+      if (
+        responseCode !== InAppPurchases.IAPResponseCode.OK ||
+        !results?.length
+      ) {
+        console.error("PackageCard: Failed to get product details", {
+          responseCode,
+          results,
+        });
+        await InAppPurchases.disconnectAsync();
+        throw new Error("Failed to get product details from App Store");
+      }
+
       // Set up the purchase listener before initiating the purchase
       const purchasePromise = new Promise((resolve, reject) => {
         InAppPurchases.setPurchaseListener(
@@ -122,6 +140,7 @@ const PackageCard = ({
 
       console.log("PackageCard: Connected to IAP, initiating purchase", {
         productId: packageNode.appleProductId,
+        productDetails: results[0],
       });
 
       // Initiate the purchase and wait for the listener to resolve
