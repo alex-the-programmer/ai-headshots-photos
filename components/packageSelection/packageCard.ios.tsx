@@ -29,46 +29,50 @@ const PackageCard = ({
       const Purchases = (await import("react-native-purchases")).default;
       console.log("PackageCard: App ownership is not Expo, setting debug logs");
       Purchases.setDebugLogsEnabled(true);
-      console.log("PackageCard: Getting offerings");
-      const products = await Purchases.getProducts([
-        packageNode.appleProductId,
-      ]);
-      console.log("PackageCard: Offerings", products);
+      try {
+        console.log("PackageCard: Getting offerings");
+        const products = await Purchases.getProducts([
+          packageNode.appleProductId,
+        ]);
+        console.log("PackageCard: Offerings", products);
 
-      const packageToBuy = products.find(
-        (p) => p.identifier === packageNode.appleProductId
-      );
-      console.log("PackageCard: Package to buy", packageToBuy);
+        const productToBuy = products.find(
+          (p) => p.identifier === packageNode.appleProductId
+        );
+        console.log("PackageCard: Product to buy", productToBuy);
 
-      if (!packageToBuy) {
-        console.log("PackageCard: No package to buy");
-        return;
+        if (!productToBuy) {
+          console.log("PackageCard: No package to buy");
+          return;
+        }
+
+        const choosePackageResult = await choosePackage({
+          variables: {
+            projectId: projectId,
+            packageId: packageNode.id,
+          },
+        });
+
+        console.log("PackageCard: Verifying Apple payment");
+        const verifyApplePaymentResult = await verifyApplePayment({
+          variables: {
+            orderId:
+              choosePackageResult.data?.choosePackage?.project?.lastOrder?.id ??
+              "",
+          },
+        });
+
+        console.log(
+          "PackageCard: Verify Apple payment result",
+          verifyApplePaymentResult
+        );
+
+        console.log("PackageCard: Purchasing product");
+        const result = await Purchases.purchaseProduct(productToBuy.identifier);
+        console.log("PackageCard: Purchase result", result);
+      } catch (error) {
+        console.log("PackageCard: Error purchasing package", error);
       }
-
-      const choosePackageResult = await choosePackage({
-        variables: {
-          projectId: projectId,
-          packageId: packageNode.id,
-        },
-      });
-
-      console.log("PackageCard: Verifying Apple payment");
-      const verifyApplePaymentResult = await verifyApplePayment({
-        variables: {
-          orderId:
-            choosePackageResult.data?.choosePackage?.project?.lastOrder?.id ??
-            "",
-        },
-      });
-
-      console.log(
-        "PackageCard: Verify Apple payment result",
-        verifyApplePaymentResult
-      );
-
-      console.log("PackageCard: Purchasing package");
-      const result = await Purchases.purchasePackage(packageToBuy);
-      console.log("PackageCard: Purchase result", result);
     } else {
       console.log("PackageCard: App ownership is Expo, choosing package");
       debugger;
