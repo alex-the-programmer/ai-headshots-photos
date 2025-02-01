@@ -9,7 +9,7 @@ import PackageCardInternal from "./packageCardInternal";
 import Constants from "expo-constants";
 import { gql } from "@apollo/client";
 import { useRouter } from "expo-router";
-import Purchases from "react-native-purchases";
+
 import { useEffect } from "react";
 
 const PackageCard = ({
@@ -26,13 +26,16 @@ const PackageCard = ({
 
   const onPress = async () => {
     if (Constants.appOwnership !== "expo") {
+      const Purchases = (await import("react-native-purchases")).default;
       console.log("PackageCard: App ownership is not Expo, setting debug logs");
       Purchases.setDebugLogsEnabled(true);
       console.log("PackageCard: Getting offerings");
-      const offerings = await Purchases.getOfferings();
-      console.log("PackageCard: Offerings", offerings);
+      const products = await Purchases.getProducts([
+        packageNode.appleProductId,
+      ]);
+      console.log("PackageCard: Offerings", products);
 
-      const packageToBuy = offerings.current?.availablePackages.find(
+      const packageToBuy = products.find(
         (p) => p.identifier === packageNode.appleProductId
       );
       console.log("PackageCard: Package to buy", packageToBuy);
@@ -68,6 +71,7 @@ const PackageCard = ({
       console.log("PackageCard: Purchase result", result);
     } else {
       console.log("PackageCard: App ownership is Expo, choosing package");
+      debugger;
       const choosePackageResult = await choosePackage({
         variables: {
           projectId: projectId,
