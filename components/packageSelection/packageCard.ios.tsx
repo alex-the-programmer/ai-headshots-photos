@@ -28,8 +28,12 @@ const PackageCard = ({
     if (Constants.appOwnership !== "expo") {
       const Purchases = (await import("react-native-purchases")).default;
       console.log("PackageCard: App ownership is not Expo, setting debug logs");
-      Purchases.setDebugLogsEnabled(true);
+
+      // Configure RevenueCat SDK first
       try {
+        await Purchases.configure({ apiKey: APPLE_API_KEY });
+        Purchases.setDebugLogsEnabled(true);
+
         console.log("PackageCard: Getting offerings");
         const products = await Purchases.getProducts([
           packageNode.appleProductId,
