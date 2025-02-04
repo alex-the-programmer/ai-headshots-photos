@@ -31,14 +31,26 @@ const PackageCard = ({
 
       // Configure RevenueCat SDK first
       try {
-        await Purchases.configure({ apiKey: APPLE_API_KEY });
-        Purchases.setDebugLogsEnabled(true);
+        await Purchases.configure({
+          apiKey: APPLE_API_KEY,
+        });
+        Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
 
-        console.log("PackageCard: Getting offerings");
+        // Get customer info
+        const customerInfo = await Purchases.getCustomerInfo();
+        console.log("CustomerInfo:", customerInfo);
+
+        console.log("PackageCard: productId", packageNode.appleProductId);
+
+        // Log offerings before getting products
+        const offerings = await Purchases.getOfferings();
+        console.log("Available offerings:", offerings);
+
+        console.log("Requesting products:", [packageNode.appleProductId]);
         const products = await Purchases.getProducts([
           packageNode.appleProductId,
         ]);
-        console.log("PackageCard: Offerings", products);
+        console.log("Retrieved products:", products);
 
         const productToBuy = products.find(
           (p) => p.identifier === packageNode.appleProductId
@@ -74,8 +86,13 @@ const PackageCard = ({
         console.log("PackageCard: Purchasing product");
         const result = await Purchases.purchaseProduct(productToBuy.identifier);
         console.log("PackageCard: Purchase result", result);
-      } catch (error) {
-        console.log("PackageCard: Error purchasing package", error);
+      } catch (error: any) {
+        console.error("RevenueCat Error:", {
+          message: error?.message,
+          code: error?.code,
+          info: error?.info,
+          underlyingError: error?.underlyingError,
+        });
       }
     } else {
       console.log("PackageCard: App ownership is Expo, choosing package");

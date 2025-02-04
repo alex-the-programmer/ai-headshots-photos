@@ -17,6 +17,9 @@
             "SKAdNetworkIdentifier": "xxxxxx"
           }
         ]
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
@@ -40,6 +43,14 @@
           "image": "./assets/images/splash-screen.png",
           "resizeMode": "cover",
           "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "react-native-purchases",
+        {
+          "ios": {
+            "appTrackingTransparency": true
+          }
         }
       ]
     ],
