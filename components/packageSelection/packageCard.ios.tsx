@@ -33,24 +33,40 @@ const PackageCard = ({
       try {
         await Purchases.configure({
           apiKey: APPLE_API_KEY,
+          observerMode: true, // Enable observer mode for testing
         });
         Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
 
-        // Get customer info
+        // Log RevenueCat configuration
+        console.log("PackageCard: RevenueCat configured");
+
+        // Get customer info first
         const customerInfo = await Purchases.getCustomerInfo();
-        console.log("CustomerInfo:", customerInfo);
+        console.log("PackageCard: Customer info", customerInfo);
 
-        console.log("PackageCard: productId", packageNode.appleProductId);
-
-        // Log offerings before getting products
+        // Get all offerings to debug what's available
         const offerings = await Purchases.getOfferings();
-        console.log("Available offerings:", offerings);
+        console.log("PackageCard: All offerings", offerings);
 
-        console.log("Requesting products:", [packageNode.appleProductId]);
+        // Log the product ID we're looking for
+        console.log(
+          "PackageCard: Looking for product ID:",
+          packageNode.appleProductId
+        );
+
+        // Get specific product
         const products = await Purchases.getProducts([
           packageNode.appleProductId,
         ]);
-        console.log("Retrieved products:", products);
+        console.log("PackageCard: Retrieved products:", products);
+
+        if (!products || products.length === 0) {
+          console.error("PackageCard: No products found. Please check:");
+          console.error("1. Product ID matches App Store Connect");
+          console.error("2. Product is active in App Store Connect");
+          console.error("3. Product is properly configured in RevenueCat");
+          return;
+        }
 
         const productToBuy = products.find(
           (p) => p.identifier === packageNode.appleProductId

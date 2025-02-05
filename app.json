@@ -44,14 +44,6 @@
           "resizeMode": "cover",
           "backgroundColor": "#ffffff"
         }
-      ],
-      [
-        "react-native-purchases",
-        {
-          "ios": {
-            "appTrackingTransparency": true
-          }
-        }
       ]
     ],
     "experiments": {
