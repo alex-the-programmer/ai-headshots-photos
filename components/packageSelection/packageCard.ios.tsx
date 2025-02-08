@@ -44,10 +44,6 @@ const PackageCard = ({
         const customerInfo = await Purchases.getCustomerInfo();
         console.log("PackageCard: Customer info", customerInfo);
 
-        // Get all offerings to debug what's available
-        const offerings = await Purchases.getOfferings();
-        console.log("PackageCard: All offerings", offerings);
-
         // Log the product ID we're looking for
         console.log(
           "PackageCard: Looking for product ID:",

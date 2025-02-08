@@ -46,8 +46,8 @@ export default function RootLayout() {
         break;
       case "preview":
       case "development":
-        apiUrl = "https://ai-photo-gen-dev-b690bba115b5.herokuapp.com/graphql";
-        break;
+      // apiUrl = "https://ai-photo-gen-dev-b690bba115b5.herokuapp.com/graphql";
+      // break;
       default:
         apiUrl = "http://localhost:3000/graphql";
     }
