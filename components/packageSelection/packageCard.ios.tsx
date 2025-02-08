@@ -81,6 +81,10 @@ const PackageCard = ({
           },
         });
 
+        console.log("PackageCard: Purchasing product");
+        const result = await Purchases.purchaseStoreProduct(productToBuy);
+        console.log("PackageCard: Purchase result", result);
+
         console.log("PackageCard: Verifying Apple payment");
         const verifyApplePaymentResult = await verifyApplePayment({
           variables: {
@@ -94,10 +98,6 @@ const PackageCard = ({
           "PackageCard: Verify Apple payment result",
           verifyApplePaymentResult
         );
-
-        console.log("PackageCard: Purchasing product");
-        const result = await Purchases.purchaseProduct(productToBuy.identifier);
-        console.log("PackageCard: Purchase result", result);
       } catch (error: any) {
         console.error("RevenueCat Error:", {
           message: error?.message,
