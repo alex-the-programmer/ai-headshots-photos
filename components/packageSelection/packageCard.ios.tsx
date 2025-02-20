@@ -2,7 +2,7 @@ import {
   OrderProcessingStatusEnum,
   PackageCardFragment,
   useChoosePackageMutation,
-  useVerifyApplePaymentMutation,
+  useRegisterRevenueCatTransactionMutation,
 } from "@/generated/graphql";
 import PackageCardInternal from "./packageCardInternal";
 
@@ -22,7 +22,10 @@ const PackageCard = ({
   const APPLE_API_KEY = "appl_hMinwDlbtbTEqXXBeDyomsQqJdr";
   const router = useRouter();
   const [choosePackage] = useChoosePackageMutation();
-  const [verifyApplePayment] = useVerifyApplePaymentMutation();
+  const [registerRevenueCatTransaction] =
+    useRegisterRevenueCatTransactionMutation();
+
+  const pollPurchaseResults = async () => {};
 
   const onPress = async () => {
     if (Constants.appOwnership !== "expo") {
@@ -31,9 +34,22 @@ const PackageCard = ({
 
       // Configure RevenueCat SDK first
       try {
+        console.log("PackageCard: Choosing package");
+        const choosePackageResult = await choosePackage({
+          variables: {
+            projectId: projectId,
+            packageId: packageNode.id,
+          },
+        });
+
+        console.log("PackageCard: Choose package result", choosePackageResult);
+
+        console.log("Configuring RevenueCat");
         await Purchases.configure({
           apiKey: APPLE_API_KEY,
           observerMode: true, // Enable observer mode for testing
+          appUserID:
+            choosePackageResult.data?.choosePackage?.project?.lastOrder?.id,
         });
         Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
 
@@ -74,30 +90,12 @@ const PackageCard = ({
           return;
         }
 
-        const choosePackageResult = await choosePackage({
-          variables: {
-            projectId: projectId,
-            packageId: packageNode.id,
-          },
-        });
-
         console.log("PackageCard: Purchasing product");
         const result = await Purchases.purchaseStoreProduct(productToBuy);
         console.log("PackageCard: Purchase result", result);
 
-        console.log("PackageCard: Verifying Apple payment");
-        const verifyApplePaymentResult = await verifyApplePayment({
-          variables: {
-            orderId:
-              choosePackageResult.data?.choosePackage?.project?.lastOrder?.id ??
-              "",
-          },
-        });
-
-        console.log(
-          "PackageCard: Verify Apple payment result",
-          verifyApplePaymentResult
-        );
+        console.log("sratign polling");
+        pollPurchaseResults();
       } catch (error: any) {
         console.error("RevenueCat Error:", {
           message: error?.message,
@@ -115,20 +113,6 @@ const PackageCard = ({
           packageId: packageNode.id,
         },
       });
-
-      console.log("PackageCard: Verifying Apple payment");
-      const verifyApplePaymentResult = await verifyApplePayment({
-        variables: {
-          orderId:
-            choosePackageResult.data?.choosePackage?.project?.lastOrder?.id ??
-            "",
-        },
-      });
-
-      console.log(
-        "PackageCard: Verify Apple payment result",
-        verifyApplePaymentResult
-      );
     }
   };
 
@@ -136,6 +120,21 @@ const PackageCard = ({
 };
 
 export default PackageCard;
+
+export const CHECK_PURCHASE_STATUS_QUERY = gql`
+  query CheckPurchaseStatus($projectId: ID!) {
+    currentUser {
+      id
+      project(projectId: $projectId) {
+        id
+        lastOrder {
+          id
+          processingStatus
+        }
+      }
+    }
+  }
+`;
 
 export const CHOOSE_PACKAGE_MUTATION = gql`
   mutation ChoosePackage($projectId: ID!, $packageId: ID!) {
@@ -148,20 +147,6 @@ export const CHOOSE_PACKAGE_MUTATION = gql`
           package {
             id
           }
-        }
-      }
-    }
-  }
-`;
-
-export const MUTATION_VERIFY_APPLE_PAYMENT = gql`
-  mutation VerifyApplePayment($orderId: ID!) {
-    verifyApplePayment(input: { orderId: $orderId }) {
-      order {
-        id
-        processingStatus
-        package {
-          id
         }
       }
     }
