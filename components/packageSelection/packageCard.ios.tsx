@@ -2,13 +2,14 @@ import {
   OrderProcessingStatusEnum,
   PackageCardFragment,
   useChoosePackageMutation,
-  useRegisterRevenueCatTransactionMutation,
 } from "@/generated/graphql";
 import PackageCardInternal from "./packageCardInternal";
 
 import Constants from "expo-constants";
-import { gql } from "@apollo/client";
+import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { useRouter } from "expo-router";
+import { ActivityIndicator, View } from "react-native";
+import { useState } from "react";
 
 import { useEffect } from "react";
 
@@ -22,10 +23,43 @@ const PackageCard = ({
   const APPLE_API_KEY = "appl_hMinwDlbtbTEqXXBeDyomsQqJdr";
   const router = useRouter();
   const [choosePackage] = useChoosePackageMutation();
-  const [registerRevenueCatTransaction] =
-    useRegisterRevenueCatTransactionMutation();
 
-  const pollPurchaseResults = async () => {};
+  const [isPolling, setIsPolling] = useState(false);
+  const client = useApolloClient();
+
+  const pollPurchaseResults = async () => {
+    setIsPolling(true);
+    const pollInterval = 2000; // 2 seconds
+
+    const checkStatus = async () => {
+      const result = await client.query({
+        query: CHECK_PURCHASE_STATUS_QUERY,
+        variables: { projectId },
+        fetchPolicy: "network-only",
+      });
+
+      const status =
+        result.data?.currentUser?.project?.lastOrder?.processingStatus;
+
+      if (status && status !== OrderProcessingStatusEnum.Created) {
+        setIsPolling(false);
+        if (status === OrderProcessingStatusEnum.PaymentProcessed) {
+          router.push({
+            pathname: "/genderSelection",
+            params: {
+              projectId,
+            },
+          });
+        }
+        return;
+      }
+
+      // Continue polling
+      setTimeout(checkStatus, pollInterval);
+    };
+
+    checkStatus();
+  };
 
   const onPress = async () => {
     if (Constants.appOwnership !== "expo") {
@@ -115,6 +149,15 @@ const PackageCard = ({
       });
     }
   };
+
+  if (isPolling) {
+    console.log("PackageCard: Polling - showing loading");
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return <PackageCardInternal packageNode={packageNode} onPress={onPress} />;
 };
