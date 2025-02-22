@@ -834,6 +834,11 @@ export type StylesSelectionPageQueryVariables = Exact<{
 
 export type StylesSelectionPageQuery = { __typename?: 'Query', availableStyles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string, name: string, logo: string }> }, availableProperties: { __typename?: 'PropertyConnection', nodes: Array<{ __typename?: 'Property', id: string, name: string, propertyValues: { __typename?: 'PropertyValueConnection', nodes: Array<{ __typename?: 'PropertyValue', id: string, name: string }> } }> }, currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum, subtotal: number, package?: { __typename?: 'Package', id: string, name: string, stylesCount: number } | null, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } }> } }> } } } | null };
 
+export type WelcomePageCheckSessionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type WelcomePageCheckSessionQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', id: string }> } } | null };
+
 export type DashboardStylesFragment = { __typename?: 'ProjectStyle', id: string, nameWithProperties: string, generatedImages: { __typename?: 'GeneratedImageConnection', nodes: Array<{ __typename?: 'GeneratedImage', id: string, originalUrl: string, thumbnailUrl: string }> } };
 
 export type UploadImageMutationVariables = Exact<{
@@ -1369,6 +1374,50 @@ export type StylesSelectionPageQueryHookResult = ReturnType<typeof useStylesSele
 export type StylesSelectionPageLazyQueryHookResult = ReturnType<typeof useStylesSelectionPageLazyQuery>;
 export type StylesSelectionPageSuspenseQueryHookResult = ReturnType<typeof useStylesSelectionPageSuspenseQuery>;
 export type StylesSelectionPageQueryResult = Apollo.QueryResult<StylesSelectionPageQuery, StylesSelectionPageQueryVariables>;
+export const WelcomePageCheckSessionDocument = gql`
+    query WelcomePageCheckSession {
+  currentUser {
+    id
+    projects {
+      nodes {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useWelcomePageCheckSessionQuery__
+ *
+ * To run a query within a React component, call `useWelcomePageCheckSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWelcomePageCheckSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWelcomePageCheckSessionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useWelcomePageCheckSessionQuery(baseOptions?: Apollo.QueryHookOptions<WelcomePageCheckSessionQuery, WelcomePageCheckSessionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WelcomePageCheckSessionQuery, WelcomePageCheckSessionQueryVariables>(WelcomePageCheckSessionDocument, options);
+      }
+export function useWelcomePageCheckSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WelcomePageCheckSessionQuery, WelcomePageCheckSessionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WelcomePageCheckSessionQuery, WelcomePageCheckSessionQueryVariables>(WelcomePageCheckSessionDocument, options);
+        }
+export function useWelcomePageCheckSessionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WelcomePageCheckSessionQuery, WelcomePageCheckSessionQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WelcomePageCheckSessionQuery, WelcomePageCheckSessionQueryVariables>(WelcomePageCheckSessionDocument, options);
+        }
+export type WelcomePageCheckSessionQueryHookResult = ReturnType<typeof useWelcomePageCheckSessionQuery>;
+export type WelcomePageCheckSessionLazyQueryHookResult = ReturnType<typeof useWelcomePageCheckSessionLazyQuery>;
+export type WelcomePageCheckSessionSuspenseQueryHookResult = ReturnType<typeof useWelcomePageCheckSessionSuspenseQuery>;
+export type WelcomePageCheckSessionQueryResult = Apollo.QueryResult<WelcomePageCheckSessionQuery, WelcomePageCheckSessionQueryVariables>;
 export const UploadImageDocument = gql`
     mutation UploadImage($projectId: ID!, $image: Upload!, $triggerProcessing: Boolean!) {
   uploadProjectImage(

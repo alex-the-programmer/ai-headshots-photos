@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React from "react";
 import Loading from "@/components/common/loading";
+import { useWelcomePageCheckSessionQuery } from "@/generated/graphql";
 
 // Initialize WebBrowser for OAuth
 WebBrowser.maybeCompleteAuthSession();
@@ -14,10 +15,14 @@ export default function WelcomeScreen() {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(true);
   const [hasSession, setHasSession] = React.useState(false);
+  const { data: sessionData, loading: queryLoading } =
+    useWelcomePageCheckSessionQuery({
+      skip: !hasSession,
+    });
 
   React.useEffect(() => {
     const checkSession = async () => {
-      await AsyncStorage.clear(); // todo remove this once we have a list of projects.
+      // await AsyncStorage.clear(); // todo remove this once we have a list of projects.
       const sessionToken = await AsyncStorage.getItem("session");
       setHasSession(!!sessionToken);
     };
@@ -26,12 +31,19 @@ export default function WelcomeScreen() {
   }, []);
 
   React.useEffect(() => {
-    if (hasSession) {
+    if (hasSession && !queryLoading) {
       setIsLoading(false);
-      router.replace("/packageSelection");
+      const hasProjects =
+        (sessionData?.currentUser?.projects?.nodes ?? []).length > 0;
+      if (hasProjects) {
+        router.replace("/projectStack");
+      } else {
+        router.replace("/packageSelection");
+      }
+    } else if (!hasSession) {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [hasSession, router]);
+  }, [hasSession, queryLoading, sessionData, router]);
 
   if (isLoading) {
     return <Loading />;
@@ -83,3 +95,16 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
 });
+
+const welcomePageCheckSessionQuery = gql`
+  query WelcomePageCheckSession {
+    currentUser {
+      id
+      projects {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+`;

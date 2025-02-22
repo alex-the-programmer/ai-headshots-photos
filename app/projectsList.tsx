@@ -1,5 +1,5 @@
 import IntoCard from "@/components/common/intoCard";
-import { View, Text, FlatList, StyleSheet, SafeAreaView } from "react-native";
+import { View, FlatList, StyleSheet, SafeAreaView } from "react-native";
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
@@ -9,6 +9,8 @@ import { gql } from "@apollo/client";
 import ProjectCard from "@/components/projectsList/projectCard";
 import { ProjectCardFragment, useProjectsListQuery } from "@/generated/graphql";
 import Loading from "@/components/common/loading";
+import PrimaryButton from "@/components/common/primaryButton";
+import { router } from "expo-router";
 
 type Project = {
   id: string;
@@ -37,6 +39,13 @@ const ProjectsList = ({
   return (
     <SafeAreaView style={styles.container}>
       <View>
+        <View>
+          <PrimaryButton
+            text="Create New Project"
+            onPress={() => router.replace("/packageSelection")}
+          />
+        </View>
+
         <FlatList
           data={projectsListData?.currentUser?.projects?.nodes}
           renderItem={({ item }) => (
