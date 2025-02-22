@@ -39,7 +39,7 @@ const ProjectsList = ({
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <View>
+        <View style={styles.buttonContainer}>
           <PrimaryButton
             text="Create New Project"
             onPress={() => router.replace("/packageSelection")}
@@ -65,6 +65,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#14142B",
+  },
+  buttonContainer: {
+    marginBottom: 20,
   },
 });
 
