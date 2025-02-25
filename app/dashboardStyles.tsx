@@ -1,7 +1,7 @@
 import { View, FlatList, StyleSheet } from "react-native";
 import { Style } from "./projectStack";
 import StyleCard from "@/components/dashboard/styleCard";
-import { useLocalSearchParams } from "expo-router";
+import { useRoute, RouteProp } from "@react-navigation/native";
 import { gql } from "@apollo/client";
 import Loading from "@/components/common/loading";
 import {
@@ -14,6 +14,9 @@ type RootStackParamList = {
   StyleImages: {
     style: DashboardStylesFragment;
   };
+  Styles: {
+    projectId: string;
+  };
 };
 
 type Props = {
@@ -21,18 +24,20 @@ type Props = {
 };
 
 const DashboardStyles = ({ navigation }: Props) => {
+  const route = useRoute<RouteProp<RootStackParamList, "Styles">>();
+  const projectId = route.params.projectId;
+
+  console.log("projectId in dashboard styles", projectId);
+  const { data: dashboardStylesData, loading } = useDashboardStylesQuery({
+    variables: { projectId },
+  });
+
   const renderStyleItem = ({ item }: { item: DashboardStylesFragment }) => (
     <StyleCard
       style={item}
       onPress={() => navigation.navigate("StyleImages", { style: item })}
     />
   );
-
-  const { projectId } = useLocalSearchParams<{ projectId: string }>();
-  console.log("projectId in dashboard styles", projectId);
-  const { data: dashboardStylesData, loading } = useDashboardStylesQuery({
-    variables: { projectId },
-  });
 
   if (loading) return <Loading />;
 
