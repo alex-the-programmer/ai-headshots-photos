@@ -25,6 +25,7 @@ const ProjectCard = ({
     if (!isClickable) return;
 
     console.log("navigation before navigating ", navigation);
+    console.log("project.id from project card", project.id);
     navigation.navigate("Styles", {
       projectId: project.id,
     });

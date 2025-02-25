@@ -29,6 +29,7 @@ const DashboardStyles = ({ navigation }: Props) => {
   );
 
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
+  console.log("projectId in dashboard styles", projectId);
   const { data: dashboardStylesData, loading } = useDashboardStylesQuery({
     variables: { projectId },
   });

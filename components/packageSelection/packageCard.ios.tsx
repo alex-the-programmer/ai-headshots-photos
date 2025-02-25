@@ -45,7 +45,7 @@ const PackageCard = ({
         setIsPolling(false);
         if (status === OrderProcessingStatusEnum.PaymentProcessed) {
           router.push({
-            pathname: "/genderSelection",
+            pathname: "/stylesSelection",
             params: {
               projectId,
             },

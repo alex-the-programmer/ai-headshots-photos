@@ -7,7 +7,11 @@ import {
 import { RootStackParamList } from "./projectStack";
 import { gql } from "@apollo/client";
 import ProjectCard from "@/components/projectsList/projectCard";
-import { ProjectCardFragment, useProjectsListQuery } from "@/generated/graphql";
+import {
+  ProjectCardFragment,
+  useCreateProjectMutation,
+  useProjectsListQuery,
+} from "@/generated/graphql";
 import Loading from "@/components/common/loading";
 import PrimaryButton from "@/components/common/primaryButton";
 import { router } from "expo-router";
@@ -34,7 +38,8 @@ const ProjectsList = ({
   projects: ProjectCardFragment[];
   navigation: ProjectsNavigationProp;
 }) => {
-  const { data: projectsListData, loading } = useProjectsListQuery();
+  const { data: projectsListData, loading, refetch } = useProjectsListQuery();
+  const [createProject] = useCreateProjectMutation();
   if (loading) return <Loading />;
   return (
     <SafeAreaView style={styles.container}>
@@ -42,7 +47,15 @@ const ProjectsList = ({
         <View style={styles.buttonContainer}>
           <PrimaryButton
             text="Create New Project"
-            onPress={() => router.replace("/packageSelection")}
+            onPress={async () => {
+              const { data: projectData } = await createProject();
+              router.replace({
+                pathname: "/packageSelection",
+                params: {
+                  projectId: projectData?.createProject?.project?.id,
+                },
+              });
+            }}
           />
         </View>
 
@@ -52,6 +65,8 @@ const ProjectsList = ({
             <ProjectCard project={item} navigation={navigation} />
           )}
           keyExtractor={(item) => item.id}
+          onRefresh={() => refetch()}
+          refreshing={loading}
         />
       </View>
     </SafeAreaView>
