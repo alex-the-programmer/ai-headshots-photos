@@ -55,7 +55,7 @@ const ProjectStack = () => {
         name="StyleImages"
         component={StyleImagesScreen}
         options={({ route }) => ({
-          title: route.params.style.name,
+          title: route.params.style.nameWithProperties,
         })}
       />
     </Stack.Navigator>
