@@ -20,7 +20,7 @@ const StyleImagesScreen = ({ route }: Props) => {
         renderItem={({ item }) => (
           <View style={styles.imageContainer}>
             <Image
-              source={{ uri: item.originalUrl }}
+              source={{ uri: item.thumbnailUrl }}
               style={styles.image}
               resizeMode="cover"
             />
