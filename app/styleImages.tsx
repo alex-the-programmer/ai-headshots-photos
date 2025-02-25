@@ -1,6 +1,7 @@
 import { View, Text, FlatList, StyleSheet, Image } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DashboardStylesFragment } from "@/generated/graphql";
+import ImageCard from "@/components/dashboard/imageCard";
 
 type RootStackParamList = {
   StyleImages: {
@@ -17,15 +18,7 @@ const StyleImagesScreen = ({ route }: Props) => {
     <View style={styles.container}>
       <FlatList
         data={style.generatedImages?.nodes}
-        renderItem={({ item }) => (
-          <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: item.thumbnailUrl }}
-              style={styles.image}
-              resizeMode="cover"
-            />
-          </View>
-        )}
+        renderItem={({ item }) => <ImageCard image={item} />}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}
@@ -42,17 +35,8 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#14142B",
   },
-  imageContainer: {
-    flex: 1,
-    padding: 8,
-  },
   row: {
     flex: 1,
     justifyContent: "space-around",
-  },
-  image: {
-    width: "100%",
-    aspectRatio: 1,
-    borderRadius: 8,
   },
 });

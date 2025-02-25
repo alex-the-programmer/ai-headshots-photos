@@ -60,9 +60,7 @@ const DASHBOARD_STYLES_FRAGMENT = gql`
     nameWithProperties
     generatedImages {
       nodes {
-        id
-        originalUrl
-        thumbnailUrl
+        ...ImageCard
       }
     }
   }

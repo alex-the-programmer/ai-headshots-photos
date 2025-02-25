@@ -790,7 +790,7 @@ export type DashboardStylesQueryVariables = Exact<{
 }>;
 
 
-export type DashboardStylesQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string, generatedImages: { __typename?: 'GeneratedImageConnection', nodes: Array<{ __typename?: 'GeneratedImage', id: string, originalUrl: string, thumbnailUrl: string }> } }> } } } | null };
+export type DashboardStylesQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string, generatedImages: { __typename?: 'GeneratedImageConnection', nodes: Array<{ __typename?: 'GeneratedImage', id: string, thumbnailUrl: string, originalUrl: string }> } }> } } } | null };
 
 export type GenderSelectorQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -839,7 +839,9 @@ export type WelcomePageCheckSessionQueryVariables = Exact<{ [key: string]: never
 
 export type WelcomePageCheckSessionQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', id: string }> } } | null };
 
-export type DashboardStylesFragment = { __typename?: 'ProjectStyle', id: string, nameWithProperties: string, generatedImages: { __typename?: 'GeneratedImageConnection', nodes: Array<{ __typename?: 'GeneratedImage', id: string, originalUrl: string, thumbnailUrl: string }> } };
+export type ImageCardFragment = { __typename?: 'GeneratedImage', id: string, thumbnailUrl: string, originalUrl: string };
+
+export type DashboardStylesFragment = { __typename?: 'ProjectStyle', id: string, nameWithProperties: string, generatedImages: { __typename?: 'GeneratedImageConnection', nodes: Array<{ __typename?: 'GeneratedImage', id: string, thumbnailUrl: string, originalUrl: string }> } };
 
 export type UploadImageMutationVariables = Exact<{
   projectId: Scalars['ID']['input'];
@@ -929,19 +931,24 @@ export const ProjectUploadImagePageFragmentDoc = gql`
   }
 }
     ${InputImageUploadImagePageFragmentDoc}`;
+export const ImageCardFragmentDoc = gql`
+    fragment ImageCard on GeneratedImage {
+  id
+  thumbnailUrl
+  originalUrl
+}
+    `;
 export const DashboardStylesFragmentDoc = gql`
     fragment dashboardStyles on ProjectStyle {
   id
   nameWithProperties
   generatedImages {
     nodes {
-      id
-      originalUrl
-      thumbnailUrl
+      ...ImageCard
     }
   }
 }
-    `;
+    ${ImageCardFragmentDoc}`;
 export const PackageCardFragmentDoc = gql`
     fragment PackageCard on Package {
   id
