@@ -1,7 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Card from "@/components/common/card";
-import CircularAvatar from "@/components/common/circularAvatar";
+import { Text, StyleSheet } from "react-native";
 import IntoCard from "../common/intoCard";
 import { DashboardStylesFragment } from "@/generated/graphql";
 import { gql } from "@apollo/client";
