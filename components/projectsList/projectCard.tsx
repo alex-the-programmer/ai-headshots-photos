@@ -44,6 +44,21 @@ const ProjectCard = ({
         return "Payment processing error";
       }
     }
+    if (
+      project.processingStatus ===
+      ProjectProcessingStatusEnum.AllImagesGenerated
+    ) {
+      return "Images generated";
+    }
+    if (
+      project.processingStatus === ProjectProcessingStatusEnum.HasInvalidImages
+    ) {
+      return "Needs attention";
+    }
+
+    if (project.processingStatus === ProjectProcessingStatusEnum.Processing) {
+      return "Processing";
+    }
     return project.processingStatus;
   };
 
