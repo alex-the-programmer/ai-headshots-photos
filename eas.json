@@ -14,6 +14,9 @@
       "developmentClient": true,
       "distribution": "internal"
     },
+    "previewNonDev": {
+      "distribution": "internal"
+    },
     "production": {
       "autoIncrement": true
     }
