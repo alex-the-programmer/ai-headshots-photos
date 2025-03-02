@@ -7,10 +7,11 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import * as Notifications from "expo-notifications";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
@@ -24,6 +25,11 @@ import {
 import { createUploadLink } from "apollo-upload-client";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
+import {
+  registerForPushNotificationsAsync,
+  addNotificationListener,
+  addNotificationResponseListener,
+} from "@/src/services/notifications";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,6 +37,9 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const router = useRouter();
+  const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -119,14 +128,46 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      if (token) {
+        setExpoPushToken(token.data);
+        // Here you would typically send this token to your backend
+        // to associate it with the user
+      }
+    });
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current = addNotificationListener((notification) => {
+      // Handle the notification here
+      console.log("Received notification:", notification);
+    });
+
+    // This listener is fired whenever a user taps on or interacts with a notification
+    responseListener.current = addNotificationResponseListener((response) => {
+      const data = response.notification.request.content.data;
+      console.log("Notification response:", data);
+
+      // Handle the notification interaction here
+      // For example, navigate to a specific screen based on the notification data
+      if (data.screen) {
+        router.push(data.screen as any); // Using type assertion since we trust the backend to send valid routes
+      }
+    });
+
+    return () => {
+      if (notificationListener.current) {
+        notificationListener.current.remove();
+      }
+      if (responseListener.current) {
+        responseListener.current.remove();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     async function checkWelcomeStatus() {
       if (loaded) {
-        // const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
-        // if (!hasSeenWelcome) {
         router.replace("/welcome");
-        // } else {
-        // router.replace("/payment");
-        // }
         SplashScreen.hideAsync();
       }
     }
