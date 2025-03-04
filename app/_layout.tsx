@@ -153,7 +153,10 @@ export default function RootLayout() {
       if (data.type === "all_images_generated" && data.project_id) {
         router.push({
           pathname: "/projectStack",
-          params: { projectId: data.project_id },
+          params: {
+            projectId: data.project_id,
+            screen: "Styles",
+          },
         });
       }
     });
