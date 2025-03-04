@@ -138,8 +138,24 @@ export default function RootLayout() {
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = addNotificationListener((notification) => {
-      // Handle the notification here
+      const data = notification.request.content.data;
       console.log("Received notification:", notification);
+
+      // Handle invalid images notification
+      if (data.type === "has_invalid_images" && data.project_id) {
+        router.push({
+          pathname: "/imagesUpload",
+          params: { projectId: data.project_id },
+        });
+      }
+
+      // Handle generated images notification
+      if (data.type === "all_images_generated" && data.project_id) {
+        router.push({
+          pathname: "/projectStack",
+          params: { projectId: data.project_id },
+        });
+      }
     });
 
     // This listener is fired whenever a user taps on or interacts with a notification
