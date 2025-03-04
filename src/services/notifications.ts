@@ -12,19 +12,35 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export async function registerForPushNotificationsAsync() {
+export async function registerForPushNotificationsAsync(
+  requestPermission = false
+) {
   let token;
 
   if (Device.isDevice) {
     // Check if we have permission, if not request it
+    console.log("registerForPushNotificationsAsync - checking permissions");
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
+    console.log(
+      "registerForPushNotificationsAsync - got permissions",
+      existingStatus
+    );
     let finalStatus = existingStatus;
 
-    if (existingStatus !== "granted") {
+    if (existingStatus !== "granted" && requestPermission) {
+      console.log("registerForPushNotificationsAsync - requesting permissions");
       const { status } = await Notifications.requestPermissionsAsync();
+      console.log(
+        "registerForPushNotificationsAsync - got permissions",
+        status
+      );
       finalStatus = status;
     }
+    console.log(
+      "registerForPushNotificationsAsync - final status",
+      finalStatus
+    );
 
     if (finalStatus !== "granted") {
       console.log("Failed to get push token for push notification!");

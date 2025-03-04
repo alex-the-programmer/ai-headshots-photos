@@ -2,9 +2,13 @@ import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import UploadImageButton from "@/components/imagesUpload/uploadImageButton";
 import UploadedImages from "@/components/imagesUpload/uploadedImages";
 import PrimaryButton from "@/components/common/primaryButton";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { gql } from "@apollo/client";
-import { useImagesUploadPageQuery } from "@/generated/graphql";
+import {
+  useImagesUploadPageQuery,
+  useRegisterExpoPushTokenMutation,
+} from "@/generated/graphql";
+import { registerForPushNotificationsAsync } from "@/src/services/notifications";
 const ImagesUpload = () => {
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const { data: imagesUploadPageData } = useImagesUploadPageQuery({
@@ -13,10 +17,28 @@ const ImagesUpload = () => {
       correctionMode: false,
     },
   });
+  const [registerExpoPushToken] = useRegisterExpoPushTokenMutation();
   const minImages = 2;
   const router = useRouter();
   const numberOfImages =
     imagesUploadPageData?.currentUser?.project?.inputImages?.nodes?.length ?? 0;
+
+  const onPressHandler = async () => {
+    console.log("onPressHandler - requesting push token");
+    const expoPushToken = await registerForPushNotificationsAsync(true);
+    console.log("onPressHandler - got push token", expoPushToken);
+    if (expoPushToken) {
+      const result = await registerExpoPushToken({
+        variables: {
+          input: {
+            expoPushToken: expoPushToken.data,
+          },
+        },
+      });
+      console.log("onPressHandler - registered push token", result);
+    }
+    router.push("/projectStack");
+  };
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -44,9 +66,7 @@ const ImagesUpload = () => {
             <PrimaryButton
               text="Next"
               disabled={numberOfImages < minImages}
-              onPress={() => {
-                router.push("/projectStack");
-              }}
+              onPress={onPressHandler}
             />
           </View>
         </View>
@@ -137,5 +157,15 @@ export const FRAGMENT_INPUT_IMAGE_UPLOAD_IMAGE_PAGE = gql`
     id
     url
     processingStatus
+  }
+`;
+
+export const MUTATION_REGISTER_PUSH_NOTIFICATION = gql`
+  mutation RegisterExpoPushToken($input: RegisterExpoPushTokenInput!) {
+    registerExpoPushToken(input: $input) {
+      user {
+        id
+      }
+    }
   }
 `;
