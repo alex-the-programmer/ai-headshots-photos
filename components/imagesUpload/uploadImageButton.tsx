@@ -7,14 +7,18 @@ import { useLocalSearchParams } from "expo-router";
 
 interface UploadImageButtonProps {
   projectId: string;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
-const UploadImageButton = () => {
-  const [uploadImage, { loading }] = useUploadImageMutation();
+const UploadImageButton = ({ onLoadingChange }: UploadImageButtonProps) => {
+  const [uploadImage, { loading }] = useUploadImageMutation({
+    onError: () => onLoadingChange?.(false),
+  });
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
 
   const performUpload = async () => {
     try {
+      onLoadingChange?.(true);
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
@@ -59,8 +63,10 @@ const UploadImageButton = () => {
           }
         }
       }
+      onLoadingChange?.(false);
     } catch (error) {
       console.error(`Error picking images:`, error);
+      onLoadingChange?.(false);
     }
   };
 

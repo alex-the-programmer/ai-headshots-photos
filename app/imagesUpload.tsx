@@ -9,6 +9,8 @@ import {
   useRegisterExpoPushTokenMutation,
 } from "@/generated/graphql";
 import { registerForPushNotificationsAsync } from "@/src/services/notifications";
+import React from "react";
+
 const ImagesUpload = () => {
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const { data: imagesUploadPageData } = useImagesUploadPageQuery({
@@ -18,6 +20,7 @@ const ImagesUpload = () => {
     },
   });
   const [registerExpoPushToken] = useRegisterExpoPushTokenMutation();
+  const [isUploading, setIsUploading] = React.useState(false);
   const minImages = 10;
   const router = useRouter();
   const numberOfImages =
@@ -50,7 +53,10 @@ const ImagesUpload = () => {
           </Text>
         </View>
 
-        <UploadImageButton />
+        <UploadImageButton
+          projectId={projectId}
+          onLoadingChange={setIsUploading}
+        />
         <UploadedImages
           images={
             imagesUploadPageData?.currentUser?.project?.inputImages?.nodes ?? []
@@ -65,7 +71,7 @@ const ImagesUpload = () => {
           <View style={styles.buttonWrapper}>
             <PrimaryButton
               text="Next"
-              disabled={numberOfImages < minImages}
+              disabled={numberOfImages < minImages || isUploading}
               onPress={onPressHandler}
             />
           </View>
