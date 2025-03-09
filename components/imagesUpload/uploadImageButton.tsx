@@ -8,9 +8,13 @@ import { useLocalSearchParams } from "expo-router";
 interface UploadImageButtonProps {
   projectId: string;
   onLoadingChange?: (loading: boolean) => void;
+  refetch: () => void;
 }
 
-const UploadImageButton = ({ onLoadingChange }: UploadImageButtonProps) => {
+const UploadImageButton = ({
+  onLoadingChange,
+  refetch,
+}: UploadImageButtonProps) => {
   const [uploadImage, { loading }] = useUploadImageMutation({
     onError: () => onLoadingChange?.(false),
   });
@@ -58,6 +62,7 @@ const UploadImageButton = ({ onLoadingChange }: UploadImageButtonProps) => {
             });
 
             console.log("Upload response:", response);
+            await refetch();
           } catch (error) {
             console.error(`Failed to upload image:`, error);
           }

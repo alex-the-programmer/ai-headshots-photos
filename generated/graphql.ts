@@ -833,7 +833,7 @@ export type ImagesUploadPageQueryVariables = Exact<{
 }>;
 
 
-export type ImagesUploadPageQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, hasInvalidImages?: boolean, hasImageProcessingErrors?: boolean, styles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string }> }, inputImages: { __typename?: 'InputImageConnection', nodes: Array<{ __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum }> } } } | null };
+export type ImagesUploadPageQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, project: { __typename?: 'Project', id: string, hasInvalidImages: boolean, hasImageProcessingErrors?: boolean, styles: { __typename?: 'StyleConnection', nodes: Array<{ __typename?: 'Style', id: string }> }, inputImages: { __typename?: 'InputImageConnection', nodes: Array<{ __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum }> } } } | null };
 
 export type ProjectUploadImagePageFragment = { __typename?: 'Project', id: string, inputImages: { __typename?: 'InputImageConnection', nodes: Array<{ __typename?: 'InputImage', id: string, url: string, processingStatus: ImageProcessingStatusEnum }> } };
 
@@ -1220,7 +1220,7 @@ export const ImagesUploadPageDocument = gql`
     id
     project(projectId: $projectId) {
       id
-      hasInvalidImages @include(if: $correctionMode)
+      hasInvalidImages
       hasImageProcessingErrors @include(if: $correctionMode)
       styles {
         nodes {

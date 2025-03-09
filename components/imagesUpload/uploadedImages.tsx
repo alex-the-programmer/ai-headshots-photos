@@ -7,9 +7,10 @@ const imageWidth = (screenWidth - 60) / 2;
 
 interface UploadedImagesProps {
   images: InputImageUploadImagePageFragment[];
+  refetch: () => void;
 }
 
-const UploadedImages = ({ images }: UploadedImagesProps) => {
+const UploadedImages = ({ images, refetch }: UploadedImagesProps) => {
   const renderItem = ({
     item,
   }: {
@@ -19,6 +20,7 @@ const UploadedImages = ({ images }: UploadedImagesProps) => {
       imageUri={item.url}
       imageId={item.id}
       status={item.processingStatus}
+      refetch={refetch}
     />
   );
 

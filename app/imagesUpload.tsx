@@ -13,7 +13,7 @@ import React from "react";
 
 const ImagesUpload = () => {
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
-  const { data: imagesUploadPageData } = useImagesUploadPageQuery({
+  const { data: imagesUploadPageData, refetch } = useImagesUploadPageQuery({
     variables: {
       projectId: projectId,
       correctionMode: false,
@@ -25,6 +25,8 @@ const ImagesUpload = () => {
   const router = useRouter();
   const numberOfImages =
     imagesUploadPageData?.currentUser?.project?.inputImages?.nodes?.length ?? 0;
+  const hasInvalidImages =
+    imagesUploadPageData?.currentUser?.project?.hasInvalidImages ?? false;
 
   const onPressHandler = async () => {
     console.log("onPressHandler - requesting push token");
@@ -56,11 +58,13 @@ const ImagesUpload = () => {
         <UploadImageButton
           projectId={projectId}
           onLoadingChange={setIsUploading}
+          refetch={refetch}
         />
         <UploadedImages
           images={
             imagesUploadPageData?.currentUser?.project?.inputImages?.nodes ?? []
           }
+          refetch={refetch}
         />
         <View style={styles.buttonContainer}>
           {numberOfImages > 0 && numberOfImages < minImages && (
@@ -68,10 +72,17 @@ const ImagesUpload = () => {
               Please upload at least {minImages} photos
             </Text>
           )}
+          {hasInvalidImages && (
+            <Text style={styles.warningText}>
+              Some photos are invalid. Please remove them and upload new ones.
+            </Text>
+          )}
           <View style={styles.buttonWrapper}>
             <PrimaryButton
               text="Next"
-              disabled={numberOfImages < minImages || isUploading}
+              disabled={
+                numberOfImages < minImages || isUploading || hasInvalidImages
+              }
               onPress={onPressHandler}
             />
           </View>
@@ -130,7 +141,7 @@ export const QUERY_IMAGES_UPLOAD_PAGE = gql`
       id
       project(projectId: $projectId) {
         id
-        hasInvalidImages @include(if: $correctionMode)
+        hasInvalidImages
         hasImageProcessingErrors @include(if: $correctionMode)
         styles {
           nodes {

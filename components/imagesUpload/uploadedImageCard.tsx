@@ -19,6 +19,7 @@ interface UploadedImageCardProps {
   imageUri: string;
   imageId: string;
   status: ImageProcessingStatusEnum;
+  refetch: () => void;
 }
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -28,12 +29,14 @@ const UploadedImageCard = ({
   imageUri,
   imageId,
   status,
+  refetch,
 }: UploadedImageCardProps) => {
   const [removeImage] = useRemoveImageMutation();
   const [modalVisible, setModalVisible] = React.useState(false);
 
   const handleDelete = async () => {
     await removeImage({ variables: { imageId: imageId } });
+    await refetch();
     setModalVisible(false);
   };
 
