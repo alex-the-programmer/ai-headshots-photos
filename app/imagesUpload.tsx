@@ -18,7 +18,7 @@ const ImagesUpload = () => {
     },
   });
   const [registerExpoPushToken] = useRegisterExpoPushTokenMutation();
-  const minImages = 2;
+  const minImages = 10;
   const router = useRouter();
   const numberOfImages =
     imagesUploadPageData?.currentUser?.project?.inputImages?.nodes?.length ?? 0;
