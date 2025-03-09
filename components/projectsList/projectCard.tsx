@@ -8,6 +8,7 @@ import {
   OrderProcessingStatusEnum,
 } from "@/generated/graphql";
 import dayjs from "dayjs";
+import { router } from "expo-router";
 
 const ProjectCard = ({
   project,
@@ -16,22 +17,38 @@ const ProjectCard = ({
   project: ProjectCardFragment;
   navigation: ProjectsNavigationProp;
 }) => {
-  const isClickable = [
-    ProjectProcessingStatusEnum.AllImagesGenerated,
-    ProjectProcessingStatusEnum.HasInvalidImages,
-  ].includes(project.processingStatus as ProjectProcessingStatusEnum);
+  const isClickable =
+    [
+      ProjectProcessingStatusEnum.AllImagesGenerated,
+      ProjectProcessingStatusEnum.HasInvalidImages,
+    ].includes(project.processingStatus as ProjectProcessingStatusEnum) ||
+    project.hasInvalidImages;
 
   const handlePress = () => {
     if (!isClickable) return;
 
-    navigation.navigate("Styles", {
-      projectId: project.id,
-    });
+    if (project.hasInvalidImages) {
+      router.push({
+        pathname: "/imagesUpload",
+        params: { projectId: project.id },
+      });
+    } else {
+      router.push({
+        pathname: "/projectStack",
+        params: {
+          projectId: project.id,
+          initialScreen: "Styles",
+        },
+      });
+    }
   };
 
   if (!project) return null;
 
   const getStatusText = () => {
+    if (project.hasInvalidImages) {
+      return "Needs attention";
+    }
     if (
       project.processingStatus === ProjectProcessingStatusEnum.Created &&
       project.orders.nodes.length > 0
@@ -49,11 +66,6 @@ const ProjectCard = ({
       ProjectProcessingStatusEnum.AllImagesGenerated
     ) {
       return "Images generated";
-    }
-    if (
-      project.processingStatus === ProjectProcessingStatusEnum.HasInvalidImages
-    ) {
-      return "Needs attention";
     }
 
     if (project.processingStatus === ProjectProcessingStatusEnum.Processing) {
@@ -88,6 +100,7 @@ export const FRAGMENT_PROJECT_CARD = gql`
   fragment projectCard on Project {
     id
     processingStatus
+    hasInvalidImages
     projectPhotoUrl
     createdAt
     projectStyles {

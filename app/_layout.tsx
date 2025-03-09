@@ -155,7 +155,7 @@ export default function RootLayout() {
           pathname: "/projectStack",
           params: {
             projectId: data.project_id,
-            screen: "Styles",
+            initialScreen: "Styles",
           },
         });
       }

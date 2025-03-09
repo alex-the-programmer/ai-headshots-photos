@@ -854,7 +854,7 @@ export type PackageSelectionPageQuery = { __typename?: 'Query', availablePackage
 export type ProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsListQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, projectPhotoUrl?: string | null, createdAt: any, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string }> }, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum }> } }> } } | null };
+export type ProjectsListQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, hasInvalidImages: boolean, projectPhotoUrl?: string | null, createdAt: any, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string }> }, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum }> } }> } } | null };
 
 export type StylesSelectionPageQueryVariables = Exact<{
   projectId: Scalars['ID']['input'];
@@ -905,7 +905,7 @@ export type ChoosePackageMutation = { __typename?: 'Mutation', choosePackage?: {
 
 export type PackageCardFragment = { __typename?: 'Package', id: string, name: string, price: number, headshotsCount: number, stylesCount: number, badge?: string | null, badgeColor?: PackageBadgeColorEnum | null, preselected: boolean, appleProductId: string };
 
-export type ProjectCardFragment = { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, projectPhotoUrl?: string | null, createdAt: any, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string }> }, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum }> } };
+export type ProjectCardFragment = { __typename?: 'Project', id: string, processingStatus: ProjectProcessingStatusEnum, hasInvalidImages: boolean, projectPhotoUrl?: string | null, createdAt: any, projectStyles: { __typename?: 'ProjectStyleConnection', nodes: Array<{ __typename?: 'ProjectStyle', id: string, nameWithProperties: string }> }, orders: { __typename?: 'OrderConnection', nodes: Array<{ __typename?: 'Order', id: string, processingStatus: OrderProcessingStatusEnum }> } };
 
 export type CartProjectStyleFragment = { __typename?: 'ProjectStyle', id: string, numberOfPhotos: number, price: number, style: { __typename?: 'Style', id: string, name: string, logo: string }, projectStyleProperties: { __typename?: 'ProjectStylePropertyConnection', nodes: Array<{ __typename?: 'ProjectStyleProperty', id: string, property: { __typename?: 'Property', id: string, name: string }, propertyValue: { __typename?: 'PropertyValue', id: string, name: string } }> } };
 
@@ -995,6 +995,7 @@ export const ProjectCardFragmentDoc = gql`
     fragment projectCard on Project {
   id
   processingStatus
+  hasInvalidImages
   projectPhotoUrl
   createdAt
   projectStyles {

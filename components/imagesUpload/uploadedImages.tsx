@@ -14,7 +14,13 @@ const UploadedImages = ({ images }: UploadedImagesProps) => {
     item,
   }: {
     item: InputImageUploadImagePageFragment;
-  }) => <UploadedImageCard imageUri={item.url} imageId={item.id} />;
+  }) => (
+    <UploadedImageCard
+      imageUri={item.url}
+      imageId={item.id}
+      status={item.processingStatus}
+    />
+  );
 
   return (
     <FlatList

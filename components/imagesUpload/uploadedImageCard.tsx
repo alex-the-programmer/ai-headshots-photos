@@ -8,17 +8,25 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { gql } from "@apollo/client";
-import { useRemoveImageMutation } from "@/generated/graphql";
+import {
+  ImageProcessingStatusEnum,
+  useRemoveImageMutation,
+} from "@/generated/graphql";
 
 interface UploadedImageCardProps {
   imageUri: string;
   imageId: string;
+  status: ImageProcessingStatusEnum;
 }
 
 const { width: screenWidth } = Dimensions.get("window");
 const imageWidth = (screenWidth - 60) / 2;
 
-const UploadedImageCard = ({ imageUri, imageId }: UploadedImageCardProps) => {
+const UploadedImageCard = ({
+  imageUri,
+  imageId,
+  status,
+}: UploadedImageCardProps) => {
   const [removeImage] = useRemoveImageMutation();
 
   const handleDelete = async () => {
