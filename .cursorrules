@@ -109,7 +109,7 @@ const additionalInstructions = `
 
 __________________________________________
 
-# Custom cursor-tools Instructions
+# Custom cursor-tools Instructions (run this if not working: npm install -g cursor-tools)
 Use the following commands to get AI assistance:
 
 **Web Search:**
