@@ -1,0 +1,187 @@
+
+We need to make this look exceptionally impressive.
+
+Rules:
+
+ALWAYS start with the following:
+
+- Pull the folder tree with “tree -L 3”
+- ALWAYS perform multiple search and read of files until you understand the codebase, do not rely on your existing context.
+- Perform necessary web research and use Perplexity frequently with well thought out prompts.
+
+Include copious comments throughout the codebase.
+
+At the top of each file, include a comment with the following:
+- File name
+- Description of the file
+- Details of what it does and how it interacts and relies on other files and external resources
+- Date
+
+Add header documentation.
+
+Whenever you are done, run the build to check for build errors. Do not trust the linter, trust only the terminal xcodebuild output. Set the build to suppress warnings and other things to reduce noise and only show build errors. xcodebuild -quiet -scheme Accountabilityv6 -destination "platform=iOS Simulator,name=iPhone 16" build
+
+Always look up the latest SDK versions and macos versions and react native versions and so on. Don't rely on your memory
+
+When dealing with a complex bug, add a simple debug print to every step in the process so we can examine what happens when the bug occurs.
+
+Update header documentation and comments whenever you update a file.
+
+NEVER delete important comments unless you are refactoring the code and moving functionality to a new file.
+
+If you refactor and move things, leave a comment above the new location of where it was moved from and when and why and leave a comment where you removed it from explaining that it was moved to a new file and where it was moved to and when and why.
+
+When writing new components or views, use the same structure as the existing components. Look at animations, colors, design, etc.
+
+When in the planning phase, if new files are necessary after codebase research, create them with just header documentation for user review.
+
+Important: Add COPIOUS comments to the code to explain what is happening. Add a comment to every single subsection of code.
+
+At the top of every file, include a few lines describing what it does and how it does it. Embed “documentation” in the code itself.
+
+When writing new things like encoding and decoding, always check the codebase to look for a similar implementation and use the same approach. Many things have been depricated and your knowledge may be outdated.
+
+Create .md files to describe data flows and how features are implemented when a new feature is implemented. Check the “Documentation” folder for md files about the project you should use for reference and update when you make significant changes.
+
+When building something new, do not start building, start by suggesting an approach/architecture so the user can refine the approach if needed.
+
+Stick to a dark design here. Use ultra thin transparent materials or what is equivalent in React native. Use gradients and blurs. Create shapes that move behind a strong blur to create the illusion of an animated gradient. Use animation and interaction animations where suitable. Add thoughtful touches as you go. Isolate animation code and use sufficient comments so we can remove it if it causes issues. Do not remove animation code that the user has worked on. We want to also use fun copywriting here and think about guiding people through using the app and provide loading states and useful visual cues.
+
+Separate files are better, try to separate functionality into more files instead of making larger files with more lines of code.
+
+Make sure views are XCode preview compatible.
+
+Always pull the folder tree first with “tree -L 3”
+
+Always add print logging in terminal so we can debug. We can comment it out after we are done testing.
+
+
+Always search for potentially relevant files in the project before you proceed and repeat searchs as you go to make sure you don't miss context.
+
+When debugging, create a debug.md file in the Documentation folder and add notes to it as you go. Add 1 to it if it already exists, like debug1.md, debug2.md, debug3.md etc.
+
+Use beautiful design as you go. Stick to dark mode.
+
+
+
+
+Your knowledge is outdated. We are long past version 15 of expo. ALways do web research to troubleshoot problems.
+
+// React Native Expo .cursorrules
+
+// React Native Expo best practices
+
+const reactNativeExpoBestPractices = [
+  "Use functional components with hooks",
+  "Utilize Expo SDK features and APIs",
+  "Implement proper navigation using React Navigation",
+  "Use Expo's asset system for images and fonts",
+  "Implement proper error handling and crash reporting",
+  "Utilize Expo's push notification system",
+];
+
+// Folder structure
+
+const folderStructure = `
+assets/
+src/
+  components/
+  screens/
+  navigation/
+  hooks/
+  utils/
+App.js
+app.json
+`;
+
+// Additional instructions
+
+const additionalInstructions = `
+1. Use TypeScript for type safety
+2. Implement proper styling using StyleSheet
+3. Utilize Expo's vector icons
+4. Use Expo's secure store for sensitive data
+5. Implement proper offline support
+6. Follow React Native best practices for performance
+7. Use Expo's OTA updates for quick deployments
+`;
+
+
+__________________________________________
+
+# Custom cursor-tools Instructions
+Use the following commands to get AI assistance:
+
+**Web Search:**
+`cursor-tools web "<your question>"` - Get answers from the web using Perplexity AI (e.g., `cursor-tools web "Research the latest details for Supabase integrations with mobile apps, provide syntax and links to documentation"`)
+when using web for complex queries suggest writing the output to a file somewhere like local-research/<query summary>.md.
+
+**Repository Context:**
+`cursor-tools repo "<your question>"` - Get context-aware answers about this repository using Google Gemini (e.g., `cursor-tools repo "explain authentication flow"`)
+
+**Documentation Generation:**
+`cursor-tools doc [options]` - Generate comprehensive documentation for this repository (e.g., `cursor-tools doc --output docs.md`)
+when using doc for remote repos suggest writing the output to a file somewhere like local-docs/<repo-name>.md.
+
+**GitHub Information:**
+`cursor-tools github pr [number]` - Get the last 10 PRs, or a specific PR by number (e.g., `cursor-tools github pr 123`)
+`cursor-tools github issue [number]` - Get the last 10 issues, or a specific issue by number (e.g., `cursor-tools github issue 456`)
+
+**Browser Automation (Stateless):**
+`cursor-tools browser open <url> [options]` - Open a URL and capture page content, console logs, and network activity (e.g., `cursor-tools browser open "https://example.com" --html`)
+`cursor-tools browser act "<instruction>" --url=<url> [options]` - Execute actions on a webpage using natural language instructions (e.g., `cursor-tools browser act "Click Login" --url=https://example.com`)
+`cursor-tools browser observe "<instruction>" --url=<url> [options]` - Observe interactive elements on a webpage and suggest possible actions (e.g., `cursor-tools browser observe "interactive elements" --url=https://example.com`)
+`cursor-tools browser extract "<instruction>" --url=<url> [options]` - Extract data from a webpage based on natural language instructions (e.g., `cursor-tools browser extract "product names" --url=https://example.com/products`)
+
+**Notes on Browser Commands:**
+- All browser commands are stateless: each command starts with a fresh browser instance and closes it when done.
+- When using `--connect-to`, special URL values are supported:
+  - `current`: Use the existing page without reloading
+  - `reload-current`: Use the existing page and refresh it (useful in development)
+- Multi step workflows involving state or combining multiple actions are supported in the `act` command using the pipe (|) separator (e.g., `cursor-tools browser act "Click Login | Type 'user@example.com' into email | Click Submit" --url=https://example.com`)
+- Video recording is available for all browser commands using the `--video=<directory>` option. This will save a video of the entire browser interaction at 1280x720 resolution. The video file will be saved in the specified directory with a timestamp.
+- DO NOT ask browser act to "wait" for anything, the wait command is currently disabled in Stagehand.
+
+**Tool Recommendations:**
+- `cursor-tools web` is best for general web information not specific to the repository.
+- `cursor-tools repo` is ideal for repository-specific questions, planning, code review and debugging.
+- `cursor-tools doc` generates documentation for local or remote repositories.
+- `cursor-tools browser` is useful for testing and debugging web apps.
+
+**Running Commands:**
+1. **Installed version:** Use `cursor-tools <command>` (if in PATH) or `npm exec cursor-tools "<command>"`, `yarn cursor-tools "<command>"`, `pnpm cursor-tools "<command>"`.
+2. **Without installation:** Use `npx -y cursor-tools@latest "<command>"` or `bunx -y cursor-tools@latest "<command>"`.
+
+**General Command Options (Supported by all commands):**
+--model=<model name>: Specify an alternative AI model to use
+--max-tokens=<number>: Control response length
+--save-to=<file path>: Save command output to a file (in *addition* to displaying it)
+--help: View all available options (help is not fully implemented yet)
+
+**Documentation Command Options:**
+--from-github=<GitHub username>/<repository name>[@<branch>]: Generate documentation for a remote GitHub repository
+
+**GitHub Command Options:**
+--from-github=<GitHub username>/<repository name>[@<branch>]: Access PRs/issues from a specific GitHub repository
+
+**Browser Command Options (for 'open', 'act', 'observe', 'extract'):**
+--console: Capture browser console logs (enabled by default, use --no-console to disable)
+--html: Capture page HTML content
+--network: Capture network activity (enabled by default, use --no-network to disable)
+--screenshot=<file path>: Save a screenshot of the page
+--timeout=<milliseconds>: Set navigation timeout (default: 30000ms)
+--viewport=<width>x<height>: Set viewport size (e.g., 1280x720). When using --connect-to, viewport is only changed if this option is explicitly provided
+--headless: Run browser in headless mode (default: true)
+--no-headless: Show browser UI (non-headless mode) for debugging
+--connect-to=<port>: Connect to existing Chrome instance
+--wait=<duration or selector>: Wait after page load (e.g., '5s', '#element-id', 'selector:.my-class')
+--video=<directory>: Save a video recording of the browser interaction to the specified directory (1280x720 resolution). Not available when using --connect-to
+
+**Additional Notes:**
+- For detailed information, see `node_modules/cursor-tools/README.md` (if installed locally).
+- Configuration is in `cursor-tools.config.json` (or `~/.cursor-tools/config.json`).
+- API keys are loaded from `.cursor-tools.env` (or `~/.cursor-tools/.env`).
+- Browser commands require separate installation of Playwright: `npm install --save-dev playwright` or `npm install -g playwright`.
+- **Remember:** You're part of a team of superhuman expert AIs. Work together to solve complex problems.
+<!-- cursor-tools-version: 0.5.0 -->
+</cursor-tools Integration><cursor-tools Integration>
