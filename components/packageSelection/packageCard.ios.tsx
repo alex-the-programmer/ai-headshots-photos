@@ -6,9 +6,10 @@ import {
 import PackageCardInternal from "./packageCardInternal";
 
 import Constants from "expo-constants";
+import * as Device from "expo-device";
 import { gql, useQuery, useApolloClient } from "@apollo/client";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, Platform } from "react-native";
 import { useState } from "react";
 
 import { useEffect } from "react";
@@ -26,6 +27,8 @@ const PackageCard = ({
 
   const [isPolling, setIsPolling] = useState(false);
   const client = useApolloClient();
+
+  const isSimulator = !Device.isDevice;
 
   const pollPurchaseResults = async () => {
     setIsPolling(true);
@@ -62,6 +65,30 @@ const PackageCard = ({
   };
 
   const onPress = async () => {
+    if (isSimulator) {
+      console.log("PackageCard: Running in simulator, bypassing package selection");
+      try {
+        const choosePackageResult = await choosePackage({
+          variables: {
+            projectId: projectId,
+            packageId: packageNode.id,
+          },
+        });
+        
+        console.log("PackageCard: Choose package result in simulator", choosePackageResult);
+        
+        router.push({
+          pathname: "/stylesSelection",
+          params: {
+            projectId,
+          },
+        });
+        return;
+      } catch (error) {
+        console.error("Error in simulator flow:", error);
+      }
+    }
+    
     if (Constants.appOwnership !== "expo") {
       const Purchases = (await import("react-native-purchases")).default;
       console.log("PackageCard: App ownership is not Expo, setting debug logs");
@@ -81,7 +108,6 @@ const PackageCard = ({
         console.log("Configuring RevenueCat");
         await Purchases.configure({
           apiKey: APPLE_API_KEY,
-          observerMode: true, // Enable observer mode for testing
           appUserID:
             choosePackageResult.data?.choosePackage?.project?.lastOrder?.id,
         });
