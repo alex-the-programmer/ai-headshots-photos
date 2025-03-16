@@ -19,7 +19,8 @@ At the top of each file, include a comment with the following:
 
 Add header documentation.
 
-Whenever you are done, run the build to check for build errors. Do not trust the linter, trust only the terminal xcodebuild output. Set the build to suppress warnings and other things to reduce noise and only show build errors. xcodebuild -quiet -scheme Accountabilityv6 -destination "platform=iOS Simulator,name=iPhone 16" build
+We are running on Expo. Beyond ver 15.
+
 
 Always look up the latest SDK versions and macos versions and react native versions and so on. Don't rely on your memory
 
@@ -49,7 +50,6 @@ Stick to a dark design here. Use ultra thin transparent materials or what is equ
 
 Separate files are better, try to separate functionality into more files instead of making larger files with more lines of code.
 
-Make sure views are XCode preview compatible.
 
 Always pull the folder tree first with “tree -L 3”
 
