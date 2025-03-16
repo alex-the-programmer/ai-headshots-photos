@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "alextheprogrammer",
     "name": "ai-headshot-photos",
     "slug": "ai-headshot-photos",
     "version": "1.0.0",
