@@ -1,12 +1,10 @@
+import React from "react";
 import {
   PropertyStyleSelectionCardFragment,
-  Style,
   StyleStyleSelectionCardFragment,
 } from "@/generated/graphql";
 import IntoCard from "../common/intoCard";
-import { Text, StyleSheet, Alert } from "react-native";
-import { useState } from "react";
-import StylesSelectionModal from "./stylesSelectionModal";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { gql } from "@apollo/client";
 
 const StyleSelectionCard = ({
@@ -14,15 +12,22 @@ const StyleSelectionCard = ({
   availableProperties,
   projectId,
   disabled,
+  onSelect,
 }: {
   style: StyleStyleSelectionCardFragment;
   availableProperties: PropertyStyleSelectionCardFragment[];
   projectId: string;
   disabled: boolean;
+  onSelect: (styleId: string) => void;
 }) => {
-  const [modalVisible, setModalVisible] = useState(false);
   const handleStylePress = () => {
-    setModalVisible(true);
+    if (disabled) {
+      maxStylesReachedAlert();
+      return;
+    }
+    
+    // Directly select the style without showing a modal
+    onSelect(style.id);
   };
 
   const maxStylesReachedAlert = () => {
@@ -32,28 +37,24 @@ const StyleSelectionCard = ({
   };
 
   return (
-    <>
-      <IntoCard
-        onPress={disabled ? maxStylesReachedAlert : handleStylePress}
-        thumbnails={[style.logo]}
-      >
-        <Text style={styles.whiteText}>{style.name}</Text>
-      </IntoCard>
-      <StylesSelectionModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        style={style}
-        properties={availableProperties}
-        projectId={projectId}
-      />
-    </>
+    <IntoCard
+      onPress={handleStylePress}
+      thumbnails={[style.logo]}
+    >
+      <Text style={styles.styleName}>{style.name}</Text>
+    </IntoCard>
   );
 };
 
 export default StyleSelectionCard;
+
 const styles = StyleSheet.create({
-  whiteText: {
+  styleName: {
     color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+    paddingHorizontal: 8,
   },
 });
 

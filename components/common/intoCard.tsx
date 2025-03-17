@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import Card from "./card";
 import CircularAvatar from "./circularAvatar";
 
@@ -17,12 +17,12 @@ const IntoCard = ({
   return (
     <Card onPress={onPress} style={styles.cardMargin} disabled={disabled}>
       <View style={styles.cardContent}>
-        <View style={styles.textContainer}>{children}</View>
         <View style={styles.thumbnailsContainer}>
           {thumbnails.map((thumbnail, index) => (
             <CircularAvatar key={index} imageUrl={thumbnail} />
           ))}
         </View>
+        <View style={styles.textContainer}>{children}</View>
       </View>
     </Card>
   );
@@ -35,16 +35,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   cardContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
+    padding: 0,
   },
   textContainer: {
-    flex: 1,
+    width: "100%",
+    marginTop: 12,
+    alignItems: "center",
   },
   thumbnailsContainer: {
-    flexDirection: "row",
-    marginLeft: 16,
-    gap: 8,
+    width: "100%",
   },
 });

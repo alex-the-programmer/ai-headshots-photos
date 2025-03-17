@@ -93,22 +93,57 @@ export default function RootLayout() {
           .then((session) => {
             const sessionData = JSON.parse(session || "{}");
             console.log("before request", sessionData);
+            
+            // Ensure we have a valid JWT token
+            if (!sessionData.jwtToken) {
+              console.warn("No JWT token found in session");
+            }
+            
             operation.setContext({
               headers: {
                 userSession: sessionData.jwtToken || "",
                 platform: Platform.OS === "ios" ? "apple" : "google",
                 accountId: sessionData.accountId || "",
+                Authorization: sessionData.jwtToken ? `Bearer ${sessionData.jwtToken}` : "",
               },
             });
           })
           .then(() => {
             handle = forward(operation).subscribe({
-              next: observer.next.bind(observer),
-              error: observer.error.bind(observer),
+              next: (result) => {
+                // Check for authentication errors
+                const errors = result.errors;
+                if (errors && errors.some(error => 
+                  error.message.includes('authentication') || 
+                  error.message.includes('unauthorized') ||
+                  error.message.includes('jwt'))) {
+                  console.error("Authentication error:", errors);
+                  // Refresh the token or redirect to login
+                  AsyncStorage.removeItem("session").then(() => {
+                    router.push("/");
+                  });
+                }
+                observer.next(result);
+              },
+              error: (error) => {
+                console.error("Apollo link error:", error);
+                if (error.message.includes('authentication') || 
+                    error.message.includes('unauthorized') ||
+                    error.message.includes('jwt')) {
+                  // Refresh the token or redirect to login
+                  AsyncStorage.removeItem("session").then(() => {
+                    router.push("/");
+                  });
+                }
+                observer.error(error);
+              },
               complete: observer.complete.bind(observer),
             });
           })
-          .catch(observer.error.bind(observer));
+          .catch((error) => {
+            console.error("Error in auth link:", error);
+            observer.error(error);
+          });
 
         return () => {
           if (handle) handle.unsubscribe();

@@ -51,4 +51,4 @@ if (isSimulator) {
 ## Notes
 - `Device.isDevice` returns `true` for physical devices and `false` for simulators/emulators
 - Added console logs for debugging purposes
-- Removed the `observerMode` property from the RevenueCat configuration as it was causing a linter error 
+- Removed the `observerMode` property from the RevenueCat configuration as it was causing a linter error

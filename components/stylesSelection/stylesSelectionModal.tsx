@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
@@ -17,6 +18,23 @@ import {
 } from "@/generated/graphql";
 import { gql } from "@apollo/client";
 import CustomPicker from "../common/picker";
+import DualSliderPicker from "../common/DualSliderPicker";
+import { LinearGradient } from "expo-linear-gradient";
+
+// Define consistent colors
+const COLORS = {
+  primary: '#6C5CE7',         // Main purple color
+  primaryLight: '#8A7EFF',    // Lighter purple accent
+  primaryDark: '#5546D3',     // Darker purple accent
+  accent: '#7c3aed',          // Bright purple accent
+  text: '#FFFFFF',            // White text
+};
+
+// Define the picker option type
+type PickerOption = {
+  name: string;
+  value: string;
+};
 
 interface StylesSelectionModalProps {
   visible: boolean;
@@ -43,14 +61,25 @@ const StylesSelectionModal = ({
     (property) => property.name === "Outfit Color"
   );
 
-  const [selectedOutfit, setSelectedOutfit] = useState(
-    outfitProperty?.propertyValues.nodes[0].id
+  const [selectedOutfit, setSelectedOutfit] = useState<string>(
+    outfitProperty?.propertyValues.nodes[0]?.id || ""
   );
-  const [selectedColor, setSelectedColor] = useState(
-    outfitColorProperty?.propertyValues.nodes[0].id
+  const [selectedColor, setSelectedColor] = useState<string>(
+    outfitColorProperty?.propertyValues.nodes[0]?.id || ""
   );
 
   const [addProjectStyle] = useAddProjectStyleMutation();
+
+  // Convert property values to picker options
+  const outfitOptions: PickerOption[] = outfitProperty?.propertyValues.nodes.map((node) => ({
+    name: node.name,
+    value: node.id,
+  })) || [];
+
+  const colorOptions: PickerOption[] = outfitColorProperty?.propertyValues.nodes.map((node) => ({
+    name: node.name,
+    value: node.id,
+  })) || [];
 
   const handleAddProjectStyle = async () => {
     if (selectedOutfit && selectedColor) {
@@ -76,35 +105,46 @@ const StylesSelectionModal = ({
         <View style={styles.modalView}>
           <Text style={styles.modalText}>{style.name}</Text>
 
-          <Text style={styles.labelText}>Outfit</Text>
+          <Text style={styles.labelText}>Select Outfit & Color</Text>
           <View style={styles.pickerContainer}>
-            <CustomPicker
-              options={outfitProperty?.propertyValues.nodes.map((node) => ({
-                name: node.name,
-                value: node.id,
-              }))}
-              selectedValue={selectedOutfit}
-              onValueChange={setSelectedOutfit}
-            />
-          </View>
-
-          <Text style={styles.labelText}>Outfit Color</Text>
-          <View style={styles.pickerContainer}>
-            <CustomPicker
-              options={outfitColorProperty?.propertyValues.nodes.map(
-                (node) => ({
-                  name: node.name,
-                  value: node.id,
-                })
-              )}
-              selectedValue={selectedColor}
-              onValueChange={setSelectedColor}
+            <DualSliderPicker
+              colorOptions={colorOptions}
+              outfitOptions={outfitOptions}
+              selectedColor={selectedColor}
+              selectedOutfit={selectedOutfit}
+              onColorChange={setSelectedColor}
+              onOutfitChange={setSelectedOutfit}
             />
           </View>
 
           <View style={styles.buttonContainer}>
-            <PrimaryButton text="Back" onPress={onClose} />
-            <PrimaryButton text="Add" onPress={handleAddProjectStyle} />
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={onClose}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={[COLORS.primaryDark, COLORS.primary]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={handleAddProjectStyle}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={[COLORS.primary, COLORS.primaryLight]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -136,33 +176,48 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
-    padding: 10,
+    flex: 1,
+    borderRadius: 12,
+    padding: 14,
     elevation: 2,
-    backgroundColor: "#2196F3",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.15)",
   },
-
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
   modalText: {
     marginBottom: 15,
     textAlign: "center",
     color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
   },
   pickerContainer: {
     width: "100%",
     marginBottom: 15,
   },
-
   labelText: {
     fontSize: 16,
     marginBottom: 5,
     alignSelf: "flex-start",
     color: "white",
   },
-
   buttonContainer: {
     flexDirection: "row",
-    gap: 10,
-    marginTop: 10,
+    width: "100%",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 20,
   },
 });
 

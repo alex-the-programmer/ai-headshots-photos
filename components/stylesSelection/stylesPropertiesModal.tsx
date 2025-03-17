@@ -1,16 +1,17 @@
 import React from "react";
-import { Modal, View, Text, StyleSheet, Image } from "react-native";
+import { Modal, View, Text, StyleSheet, Image, Alert, TouchableOpacity } from "react-native";
 import PrimaryButton from "../common/primaryButton";
 import {
   CartProjectStyleFragment,
   useDeleteProjectStyleMutation,
+  StylesSelectionPageDocument
 } from "@/generated/graphql";
-import { gql } from "@apollo/client";
+import { gql, useApolloClient } from "@apollo/client";
+import { router, useLocalSearchParams } from "expo-router";
 
 interface StylesPropertiesModalProps {
   visible: boolean;
   onClose: () => void;
-
   projectStyle: CartProjectStyleFragment;
 }
 
@@ -21,15 +22,31 @@ const StylesPropertiesModal = ({
 }: StylesPropertiesModalProps) => {
   if (!projectStyle) return null;
 
-  const [deleteProjectStyle] = useDeleteProjectStyleMutation();
+  const [deleteProjectStyle, { loading }] = useDeleteProjectStyleMutation();
+  const client = useApolloClient();
+  // Get projectId from the URL params
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
 
-  const onDelete = () => {
-    deleteProjectStyle({
-      variables: {
-        projectStyleId: projectStyle.id,
-      },
-    });
-    onClose();
+  const onDelete = async () => {
+    try {
+      console.log("Deleting style:", projectStyle.id);
+      
+      await deleteProjectStyle({
+        variables: {
+          projectStyleId: projectStyle.id,
+        },
+        refetchQueries: ['StylesSelectionPage']
+      });
+      
+      console.log("Style deleted successfully");
+      onClose();
+    } catch (error) {
+      console.error("Error deleting style:", error);
+      Alert.alert(
+        "Error",
+        "Failed to delete style. Please try again."
+      );
+    }
   };
 
   const outfit = projectStyle.projectStyleProperties.nodes.find(
@@ -76,13 +93,24 @@ const StylesPropertiesModal = ({
           </View>
 
           <View style={styles.buttonContainer}>
-            <PrimaryButton text="Back" onPress={onClose} />
-            <PrimaryButton
-              text="Delete"
+            <TouchableOpacity 
+              style={[styles.backButton]} 
+              onPress={onClose}
+              disabled={loading}
+            >
+              <Text style={styles.backButtonText}>
+                Back
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.deleteButton, loading && styles.deleteButtonDisabled]} 
               onPress={onDelete}
-              style={styles.deleteButton}
-              textStyle={styles.deleteButtonText}
-            />
+              disabled={loading}
+            >
+              <Text style={styles.deleteButtonText}>
+                {loading ? "Deleting..." : "Delete"}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -142,14 +170,39 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
     gap: 10,
     marginTop: 20,
   },
+  backButton: {
+    backgroundColor: "#333333",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: 'center',
+    width: "48%",
+  },
   deleteButton: {
     backgroundColor: "#FF3B30",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: 'center',
+    width: "48%",
+  },
+  deleteButtonDisabled: {
+    opacity: 0.6,
+  },
+  backButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   deleteButtonText: {
     color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

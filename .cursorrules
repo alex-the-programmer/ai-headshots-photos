@@ -46,7 +46,7 @@ Create .md files to describe data flows and how features are implemented when a 
 
 When building something new, do not start building, start by suggesting an approach/architecture so the user can refine the approach if needed.
 
-Stick to a dark design here. Use ultra thin transparent materials or what is equivalent in React native. Use gradients and blurs. Create shapes that move behind a strong blur to create the illusion of an animated gradient. Use animation and interaction animations where suitable. Add thoughtful touches as you go. Isolate animation code and use sufficient comments so we can remove it if it causes issues. Do not remove animation code that the user has worked on. We want to also use fun copywriting here and think about guiding people through using the app and provide loading states and useful visual cues.
+Stick to a dark design here. Use ultra thin transparent materials or what is equivalent in React native. Use gradients and blurs. Create shapes that move behind a strong blur to create the illusion of an animated gradient. Use animation and interaction animations where suitable. Add thoughtful touches as you go. Isolate animation code and use sufficient comments so we can remove it if it causes issues. Do not remove animation code that the user has worked on. We want to also use fun copywriting here and think about guiding people through using the app and provide loading states and useful visual cues. Buttons should have gradients and main buttons should stand out more.
 
 Separate files are better, try to separate functionality into more files instead of making larger files with more lines of code.
 
@@ -60,9 +60,7 @@ Always search for potentially relevant files in the project before you proceed a
 
 When debugging, create a debug.md file in the Documentation folder and add notes to it as you go. Add 1 to it if it already exists, like debug1.md, debug2.md, debug3.md etc.
 
-Use beautiful design as you go. Stick to dark mode.
-
-
+Use beautiful design as you go. Stick to dark mode. Think like a product manager and viral marketer and growth hacker. We need excellence here. AAA!
 
 
 Your knowledge is outdated. We are long past version 15 of expo. ALways do web research to troubleshoot problems.
